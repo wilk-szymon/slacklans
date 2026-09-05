@@ -1,7 +1,7 @@
 ---
 change_id: minimal-login
 title: Minimal email+password login with public read
-status: implementing
+status: impl_reviewed
 created: 2026-09-05
 updated: 2026-09-05
 archived_at: null

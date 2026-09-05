@@ -281,16 +281,16 @@ First identity schema only. No backfill. If Neon is empty, register creates the 
 
 #### Automated
 
-- [x] 3.1 npm run lint passes
-- [x] 3.2 npm run build passes
+- [x] 3.1 npm run lint passes — 4c06394
+- [x] 3.2 npm run build passes — 4c06394
 
 #### Manual
 
-- [x] 3.3 Logged-out / is 200 and Polish
-- [x] 3.4 Logged-in / shows email + Wyloguj
-- [x] 3.5 Logged-out /nowe never shows the placeholder
-- [x] 3.6 Logged-in /nowe shows coming soon; after logout, /nowe is gated again
-- [x] 3.7 Usable on a phone-width viewport
+- [x] 3.3 Logged-out / is 200 and Polish — 4c06394
+- [x] 3.4 Logged-in / shows email + Wyloguj — 4c06394
+- [x] 3.5 Logged-out /nowe never shows the placeholder — 4c06394
+- [x] 3.6 Logged-in /nowe shows coming soon; after logout, /nowe is gated again — 4c06394
+- [x] 3.7 Usable on a phone-width viewport — 4c06394
 
 ### Phase 4: Ship and verify
 

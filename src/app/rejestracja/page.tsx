@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { safeCallbackPath } from "@/lib/safe-callback-path";
+import { getSession } from "@/lib/session";
 import { RegisterForm } from "./RegisterForm";
 
 export const metadata = {
@@ -12,9 +11,7 @@ export const metadata = {
 export default async function RegisterPage({
   searchParams,
 }: PageProps<"/rejestracja">) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
   if (session) {
     redirect("/");
   }

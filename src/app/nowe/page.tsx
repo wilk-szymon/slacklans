@@ -1,15 +1,12 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export const metadata = {
   title: "Nowe — Slacklans",
 };
 
 export default async function NowePage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
   if (!session) {
     redirect("/logowanie?callbackUrl=/nowe");
   }

@@ -1,12 +1,14 @@
 import Link from "next/link";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { logout } from "@/lib/auth-actions";
+import { getSession } from "@/lib/session";
 
 export async function SessionChrome() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session: Awaited<ReturnType<typeof getSession>> = null;
+  try {
+    session = await getSession();
+  } catch {
+    session = null;
+  }
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 px-4 py-3">
