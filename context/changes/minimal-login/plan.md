@@ -267,30 +267,30 @@ First identity schema only. No backfill. If Neon is empty, register creates the 
 
 #### Automated
 
-- [x] 2.1 npm run lint passes
-- [x] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes — 63f833b
+- [x] 2.2 npm run build passes — 63f833b
 
 #### Manual
 
-- [x] 2.3 Register with a new email then see logged-in chrome on /
-- [x] 2.4 Login with same email in different casing works
-- [x] 2.5 Wrong password: generic Polish error; after several tries, cooldown
-- [x] 2.6 Logout returns to logged-out home
+- [x] 2.3 Register with a new email then see logged-in chrome on / — 63f833b
+- [x] 2.4 Login with same email in different casing works — 63f833b
+- [x] 2.5 Wrong password: generic Polish error; after several tries, cooldown — 63f833b
+- [x] 2.6 Logout returns to logged-out home — 63f833b
 
 ### Phase 3: Polish chrome and /nowe
 
 #### Automated
 
-- [ ] 3.1 npm run lint passes
-- [ ] 3.2 npm run build passes
+- [x] 3.1 npm run lint passes
+- [x] 3.2 npm run build passes
 
 #### Manual
 
-- [ ] 3.3 Logged-out / is 200 and Polish
-- [ ] 3.4 Logged-in / shows email + Wyloguj
-- [ ] 3.5 Logged-out /nowe never shows the placeholder
-- [ ] 3.6 Logged-in /nowe shows coming soon; after logout, /nowe is gated again
-- [ ] 3.7 Usable on a phone-width viewport
+- [x] 3.3 Logged-out / is 200 and Polish
+- [x] 3.4 Logged-in / shows email + Wyloguj
+- [x] 3.5 Logged-out /nowe never shows the placeholder
+- [x] 3.6 Logged-in /nowe shows coming soon; after logout, /nowe is gated again
+- [x] 3.7 Usable on a phone-width viewport
 
 ### Phase 4: Ship and verify
 

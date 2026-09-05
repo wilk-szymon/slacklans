@@ -9,7 +9,7 @@ export async function SessionChrome() {
   });
 
   return (
-    <header className="flex items-center justify-between gap-4 px-4 py-3">
+    <header className="flex flex-wrap items-center justify-between gap-4 px-4 py-3">
       <Link href="/" className="flex min-h-12 items-center text-base font-semibold">
         Slacklans
       </Link>
