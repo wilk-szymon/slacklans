@@ -256,26 +256,26 @@ First identity schema only. No backfill. If Neon is empty, register creates the 
 
 #### Automated
 
-- [x] 1.1 npm run lint passes
-- [x] 1.2 App boots locally with DATABASE_URL set after migrate
+- [x] 1.1 npm run lint passes — 98319fd
+- [x] 1.2 App boots locally with DATABASE_URL set after migrate — 98319fd
 
 #### Manual
 
-- [x] 1.3 Neon instance is EU; Vercel env has DATABASE_URL for Production and Preview
+- [x] 1.3 Neon instance is EU; Vercel env has DATABASE_URL for Production and Preview — 98319fd
 
 ### Phase 2: Session gate
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run build passes
 
 #### Manual
 
-- [ ] 2.3 Register with a new email then see logged-in chrome on /
-- [ ] 2.4 Login with same email in different casing works
-- [ ] 2.5 Wrong password: generic Polish error; after several tries, cooldown
-- [ ] 2.6 Logout returns to logged-out home
+- [x] 2.3 Register with a new email then see logged-in chrome on /
+- [x] 2.4 Login with same email in different casing works
+- [x] 2.5 Wrong password: generic Polish error; after several tries, cooldown
+- [x] 2.6 Logout returns to logged-out home
 
 ### Phase 3: Polish chrome and /nowe
 
