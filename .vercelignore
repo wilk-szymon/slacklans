@@ -1,0 +1,8 @@
+context
+.agents
+.claude
+.ai
+AGENTS.md.scaffold
+skills-lock.json
+node_modules
+.next
