@@ -296,11 +296,11 @@ First identity schema only. No backfill. If Neon is empty, register creates the 
 
 #### Automated
 
-- [x] 4.1 npm run lint passes
-- [x] 4.2 npm run build passes
+- [x] 4.1 npm run lint passes — 91c2012
+- [x] 4.2 npm run build passes — 91c2012
 
 #### Manual
 
-- [x] 4.3 Production register → login → /nowe → logout → /nowe gated
-- [x] 4.4 Logged-out / still public
-- [x] 4.5 After a fresh deploy, the same email still logs in
+- [x] 4.3 Production register → login → /nowe → logout → /nowe gated — 91c2012
+- [x] 4.4 Logged-out / still public — 91c2012
+- [x] 4.5 After a fresh deploy, the same email still logs in — 91c2012
