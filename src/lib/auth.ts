@@ -13,7 +13,7 @@ export const auth = betterAuth({
       account,
       verification,
     },
-    transaction: false,
+    transaction: true,
   }),
   emailAndPassword: {
     enabled: true,
@@ -36,7 +36,11 @@ export const auth = betterAuth({
       },
     },
   },
-  disabledPaths: ["/request-password-reset", "/reset-password"],
+  disabledPaths: [
+    "/request-password-reset",
+    "/reset-password",
+    "/sign-up/email",
+  ],
   telemetry: {
     enabled: false,
   },

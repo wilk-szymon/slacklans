@@ -112,8 +112,10 @@ export async function register(
 }
 
 export async function logout(): Promise<void> {
-  await auth.api.signOut({
-    headers: await headers(),
-  });
+  try {
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+  } catch {}
   redirect("/");
 }
