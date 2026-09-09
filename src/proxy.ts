@@ -3,6 +3,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname !== "/spot") {
+    return NextResponse.next();
+  }
+
   const sessionCookie = getSessionCookie(request);
   if (!sessionCookie) {
     const login = new URL("/logowanie", request.url);
