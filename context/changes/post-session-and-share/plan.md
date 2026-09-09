@@ -292,29 +292,29 @@ Forward-only `0002`. No backfill. Rollback: remove `/spot` and `/sesja` routes, 
 
 #### Automated
 
-- [x] 1.1 npm run db:generate produces a new 0002_* migration that creates spot and event only
-- [x] 1.2 npm run db:migrate applies on a database that already has 0000/0001
-- [x] 1.3 npm run lint passes
+- [x] 1.1 npm run db:generate produces a new 0002_* migration that creates spot and event only — 193ad53
+- [x] 1.2 npm run db:migrate applies on a database that already has 0000/0001 — 193ad53
+- [x] 1.3 npm run lint passes — 193ad53
 
 #### Manual
 
-- [x] 1.4 Neon (or local) shows timestamptz columns and RESTRICT FKs to user
-- [x] 1.5 Auth tables unchanged; existing login still works
+- [x] 1.4 Neon (or local) shows timestamptz columns and RESTRICT FKs to user — 193ad53
+- [x] 1.5 Auth tables unchanged; existing login still works — 193ad53
 
 ### Phase 2: MapTiler and Leaflet island
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run build passes with NEXT_PUBLIC_MAPTILER_KEY unset
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run build passes with NEXT_PUBLIC_MAPTILER_KEY unset
 
 #### Manual
 
-- [ ] 2.3 With a protected key in .env.local, logged-in /spot shows MapTiler tiles over Gdynia, attribution visible
-- [ ] 2.4 Logged-out /spot goes to login, not the map
-- [ ] 2.5 /nowe redirects to /spot (then login if logged out)
-- [ ] 2.6 / and /sesja/anything are not cookie-gated by proxy
-- [ ] 2.7 Phone-width: map is tappable, not hover-only
+- [x] 2.3 With a protected key in .env.local, logged-in /spot shows MapTiler tiles over Gdynia, attribution visible
+- [x] 2.4 Logged-out /spot goes to login, not the map
+- [x] 2.5 /nowe redirects to /spot (then login if logged out)
+- [x] 2.6 / and /sesja/anything are not cookie-gated by proxy
+- [x] 2.7 Phone-width: map is tappable, not hover-only
 
 ### Phase 3: Post a session from `/spot`
 

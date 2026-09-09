@@ -6,12 +6,12 @@ export function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
   if (!sessionCookie) {
     const login = new URL("/logowanie", request.url);
-    login.searchParams.set("callbackUrl", "/nowe");
+    login.searchParams.set("callbackUrl", "/spot");
     return NextResponse.redirect(login);
   }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/nowe"],
+  matcher: ["/spot"],
 };
