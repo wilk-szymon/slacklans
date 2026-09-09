@@ -47,4 +47,9 @@
 - **Location**: context/changes/post-session-and-share/plan.md (Progress 4.7)
 - **Detail**: 4.7 requires Production (or agreed preview): tiles + post + logged-out visitor sees the session. `NEXT_PUBLIC_MAPTILER_KEY` is on Vercel Production/Preview and MapTiler origins were added, but `main` is 8 commits ahead of `origin/main` (HEAD `c12bbb3`; origin still F-01 `172dcbc`). Plan forbids unattended prod deploy. Local 4.3–4.6 have human confirmation; 4.7 does not have a live visitor URL.
 - **Fix**: Reopen 4.7 as pending until an explicit preview or production deploy is verified, or deploy on request and then keep 4.7 checked.
-- **Decision**: PENDING
+- **Decision**: FIXED via production deploy (`4c29b1f` on `origin/main`; https://slacklans.vercel.app Ready). Logged-out `/sesja/71ef9ef5-ff20-43b3-be72-e60ea1fcf54f` is 200 with Warsaw copy, OSM link, no Leaflet, no login wall. `/spot` is 307 to login; `/spot/nested` is 404 (not gated).
+
+## Triage
+
+- **F1**: FIXED via Fix A
+- **F2**: FIXED via production deploy
