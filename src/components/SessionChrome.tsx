@@ -16,7 +16,13 @@ export async function SessionChrome() {
         Slacklans
       </Link>
       {session?.user ? (
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-3">
+          <Link
+            href="/spot"
+            className="flex min-h-12 items-center px-4 text-base font-medium"
+          >
+            Nowa sesja
+          </Link>
           <span className="truncate text-sm">{session.user.email}</span>
           <form action={logout}>
             <button

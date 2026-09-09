@@ -320,28 +320,28 @@ Forward-only `0002`. No backfill. Rollback: remove `/spot` and `/sesja` routes, 
 
 #### Automated
 
-- [x] 3.1 npm run lint passes
-- [x] 3.2 npm run build passes
+- [x] 3.1 npm run lint passes — e0d7fb8
+- [x] 3.2 npm run build passes — e0d7fb8
 
 #### Manual
 
-- [x] 3.3 New pin + name + valid times → spot and event rows; URL is /sesja/<id> (page may 404 until Phase 4)
-- [x] 3.4 Existing pin + valid times → new event only, same spot_id; URL is /sesja/<id> (page may 404 until Phase 4)
-- [x] 3.5 Finish equal to or before start → Polish error, no row
-- [x] 3.6 Logged-out POST cannot create
-- [x] 3.7 Usable on a phone-width viewport
+- [x] 3.3 New pin + name + valid times → spot and event rows; URL is /sesja/<id> (page may 404 until Phase 4) — e0d7fb8
+- [x] 3.4 Existing pin + valid times → new event only, same spot_id; URL is /sesja/<id> (page may 404 until Phase 4) — e0d7fb8
+- [x] 3.5 Finish equal to or before start → Polish error, no row — e0d7fb8
+- [x] 3.6 Logged-out POST cannot create — e0d7fb8
+- [x] 3.7 Usable on a phone-width viewport — e0d7fb8
 
 ### Phase 4: Public `/sesja/[id]` and chrome
 
 #### Automated
 
-- [ ] 4.1 npm run lint passes
-- [ ] 4.2 npm run build passes
+- [x] 4.1 npm run lint passes
+- [x] 4.2 npm run build passes
 
 #### Manual
 
-- [ ] 4.3 Logged-out /sesja/<real-id> is 200: Warsaw times, name or coords, map link, no login wall, no Leaflet
-- [ ] 4.4 Unknown /sesja/… is 404, not the create form
-- [ ] 4.5 Logged-in chrome opens /spot
-- [ ] 4.6 After logout, /spot is gated; /sesja/<id> still public
-- [ ] 4.7 Production (or agreed preview): tiles + post + logged-out visitor sees the session
+- [x] 4.3 Logged-out /sesja/<real-id> is 200: Warsaw times, name or coords, map link, no login wall, no Leaflet
+- [x] 4.4 Unknown /sesja/… is 404, not the create form
+- [x] 4.5 Logged-in chrome opens /spot
+- [x] 4.6 After logout, /spot is gated; /sesja/<id> still public
+- [x] 4.7 Production (or agreed preview): tiles + post + logged-out visitor sees the session
