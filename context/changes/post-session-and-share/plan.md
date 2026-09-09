@@ -292,14 +292,14 @@ Forward-only `0002`. No backfill. Rollback: remove `/spot` and `/sesja` routes, 
 
 #### Automated
 
-- [ ] 1.1 npm run db:generate produces a new 0002_* migration that creates spot and event only
-- [ ] 1.2 npm run db:migrate applies on a database that already has 0000/0001
-- [ ] 1.3 npm run lint passes
+- [x] 1.1 npm run db:generate produces a new 0002_* migration that creates spot and event only
+- [x] 1.2 npm run db:migrate applies on a database that already has 0000/0001
+- [x] 1.3 npm run lint passes
 
 #### Manual
 
-- [ ] 1.4 Neon (or local) shows timestamptz columns and RESTRICT FKs to user
-- [ ] 1.5 Auth tables unchanged; existing login still works
+- [x] 1.4 Neon (or local) shows timestamptz columns and RESTRICT FKs to user
+- [x] 1.5 Auth tables unchanged; existing login still works
 
 ### Phase 2: MapTiler and Leaflet island
 

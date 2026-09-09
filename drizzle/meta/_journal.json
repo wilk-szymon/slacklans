@@ -15,6 +15,13 @@
       "when": 1788639715958,
       "tag": "0001_lush_wiccan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788981779512,
+      "tag": "0002_fine_fenris",
+      "breakpoints": true
     }
   ]
 }
