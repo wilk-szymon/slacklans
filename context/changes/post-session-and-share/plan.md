@@ -335,13 +335,13 @@ Forward-only `0002`. No backfill. Rollback: remove `/spot` and `/sesja` routes, 
 
 #### Automated
 
-- [x] 4.1 npm run lint passes
-- [x] 4.2 npm run build passes
+- [x] 4.1 npm run lint passes — 0924694
+- [x] 4.2 npm run build passes — 0924694
 
 #### Manual
 
-- [x] 4.3 Logged-out /sesja/<real-id> is 200: Warsaw times, name or coords, map link, no login wall, no Leaflet
-- [x] 4.4 Unknown /sesja/… is 404, not the create form
-- [x] 4.5 Logged-in chrome opens /spot
-- [x] 4.6 After logout, /spot is gated; /sesja/<id> still public
-- [x] 4.7 Production (or agreed preview): tiles + post + logged-out visitor sees the session
+- [x] 4.3 Logged-out /sesja/<real-id> is 200: Warsaw times, name or coords, map link, no login wall, no Leaflet — 0924694
+- [x] 4.4 Unknown /sesja/… is 404, not the create form — 0924694
+- [x] 4.5 Logged-in chrome opens /spot — 0924694
+- [x] 4.6 After logout, /spot is gated; /sesja/<id> still public — 0924694
+- [x] 4.7 Production (or agreed preview): tiles + post + logged-out visitor sees the session — 0924694

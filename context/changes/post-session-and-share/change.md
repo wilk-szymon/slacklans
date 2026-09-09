@@ -1,7 +1,7 @@
 ---
 change_id: post-session-and-share
 title: Post session and share
-status: implementing
+status: implemented
 created: 2026-09-08
 updated: 2026-09-09
 archived_at: null
