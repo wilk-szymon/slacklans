@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { SpotMapProps } from "./SpotMap";
 
 const SpotMap = dynamic(() => import("./SpotMap"), {
   ssr: false,
@@ -11,7 +12,7 @@ const SpotMap = dynamic(() => import("./SpotMap"), {
   ),
 });
 
-export function SpotMapLoader({ maptilerKey }: { maptilerKey: string }) {
+export function SpotMapLoader({ maptilerKey, ...props }: SpotMapProps) {
   if (!maptilerKey) {
     return (
       <p role="alert" className="text-base text-red-600">
@@ -20,5 +21,5 @@ export function SpotMapLoader({ maptilerKey }: { maptilerKey: string }) {
     );
   }
 
-  return <SpotMap maptilerKey={maptilerKey} />;
+  return <SpotMap maptilerKey={maptilerKey} {...props} />;
 }

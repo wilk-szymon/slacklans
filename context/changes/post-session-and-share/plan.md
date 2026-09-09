@@ -305,31 +305,31 @@ Forward-only `0002`. No backfill. Rollback: remove `/spot` and `/sesja` routes, 
 
 #### Automated
 
-- [x] 2.1 npm run lint passes
-- [x] 2.2 npm run build passes with NEXT_PUBLIC_MAPTILER_KEY unset
+- [x] 2.1 npm run lint passes — 6c6c048
+- [x] 2.2 npm run build passes with NEXT_PUBLIC_MAPTILER_KEY unset — 6c6c048
 
 #### Manual
 
-- [x] 2.3 With a protected key in .env.local, logged-in /spot shows MapTiler tiles over Gdynia, attribution visible
-- [x] 2.4 Logged-out /spot goes to login, not the map
-- [x] 2.5 /nowe redirects to /spot (then login if logged out)
-- [x] 2.6 / and /sesja/anything are not cookie-gated by proxy
-- [x] 2.7 Phone-width: map is tappable, not hover-only
+- [x] 2.3 With a protected key in .env.local, logged-in /spot shows MapTiler tiles over Gdynia, attribution visible — 6c6c048
+- [x] 2.4 Logged-out /spot goes to login, not the map — 6c6c048
+- [x] 2.5 /nowe redirects to /spot (then login if logged out) — 6c6c048
+- [x] 2.6 / and /sesja/anything are not cookie-gated by proxy — 6c6c048
+- [x] 2.7 Phone-width: map is tappable, not hover-only — 6c6c048
 
 ### Phase 3: Post a session from `/spot`
 
 #### Automated
 
-- [ ] 3.1 npm run lint passes
-- [ ] 3.2 npm run build passes
+- [x] 3.1 npm run lint passes
+- [x] 3.2 npm run build passes
 
 #### Manual
 
-- [ ] 3.3 New pin + name + valid times → spot and event rows; URL is /sesja/<id> (page may 404 until Phase 4)
-- [ ] 3.4 Existing pin + valid times → new event only, same spot_id; URL is /sesja/<id> (page may 404 until Phase 4)
-- [ ] 3.5 Finish equal to or before start → Polish error, no row
-- [ ] 3.6 Logged-out POST cannot create
-- [ ] 3.7 Usable on a phone-width viewport
+- [x] 3.3 New pin + name + valid times → spot and event rows; URL is /sesja/<id> (page may 404 until Phase 4)
+- [x] 3.4 Existing pin + valid times → new event only, same spot_id; URL is /sesja/<id> (page may 404 until Phase 4)
+- [x] 3.5 Finish equal to or before start → Polish error, no row
+- [x] 3.6 Logged-out POST cannot create
+- [x] 3.7 Usable on a phone-width viewport
 
 ### Phase 4: Public `/sesja/[id]` and chrome
 

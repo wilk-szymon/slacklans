@@ -24,3 +24,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.spot-marker-selected {
+  filter: hue-rotate(150deg) saturate(1.3);
+}
