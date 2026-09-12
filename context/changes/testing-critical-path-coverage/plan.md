@@ -364,19 +364,19 @@ No database migration. Auth cookie contract unchanged. Existing sessions keep wo
 
 #### Automated
 
-- [x] 4.1 Helper unit: reject → null; SessionChrome no longer calls getSession directly
-- [x] 4.2 Public page source files do not contain getSession
-- [x] 4.3 npm run test:run passes
-- [x] 4.4 npm run lint passes
+- [x] 4.1 Helper unit: reject → null; SessionChrome no longer calls getSession directly — 624902e
+- [x] 4.2 Public page source files do not contain getSession — 624902e
+- [x] 4.3 npm run test:run passes — 624902e
+- [x] 4.4 npm run lint passes — 624902e
 
 ### Phase 5: Cookbook and test-plan §2
 
 #### Automated
 
-- [ ] 5.1 npm run test:run still passes
-- [ ] 5.2 context/foundation/test-plan.md §6.1, §6.2, §6.4 are not TBD
+- [x] 5.1 npm run test:run still passes
+- [x] 5.2 context/foundation/test-plan.md §6.1, §6.2, §6.4 are not TBD
 
 #### Manual
 
-- [ ] 5.3 Reading §6 is enough to add another write-gate or auth-body test without rereading research
-- [ ] 5.4 §2 Source cells have no file:line or function names
+- [x] 5.3 Reading §6 is enough to add another write-gate or auth-body test without rereading research
+- [x] 5.4 §2 Source cells have no file:line or function names
