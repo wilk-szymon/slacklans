@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { AUTH_DISABLED_PATHS } from "@/lib/auth-disabled-paths";
 import { getDb } from "@/lib/db";
 import { account, session, user, verification } from "@/lib/schema/auth";
 
@@ -36,11 +37,7 @@ export const auth = betterAuth({
       },
     },
   },
-  disabledPaths: [
-    "/request-password-reset",
-    "/reset-password",
-    "/sign-up/email",
-  ],
+  disabledPaths: [...AUTH_DISABLED_PATHS],
   telemetry: {
     enabled: false,
   },

@@ -329,25 +329,25 @@ No database migration. Auth cookie contract unchanged. Existing sessions keep wo
 
 #### Automated
 
-- [x] 1.1 npm run test:run exits 0
-- [x] 1.2 package.json has test and test:run scripts; vitest.config.mts exists
-- [x] 1.3 npm run lint passes
+- [x] 1.1 npm run test:run exits 0 — e3bd982
+- [x] 1.2 package.json has test and test:run scripts; vitest.config.mts exists — e3bd982
+- [x] 1.3 npm run lint passes — e3bd982
 
 #### Manual
 
-- [x] 1.4 AGENTS.md no longer forbids a test runner and points at test-plan.md §6
+- [x] 1.4 AGENTS.md no longer forbids a test runner and points at test-plan.md §6 — e3bd982
 
 ### Phase 2: Secret leak (#1)
 
 #### Automated
 
-- [ ] 2.1 npm run test:run passes including stripper, action, cooldown, and sign-up-closed tests
-- [ ] 2.2 Canary password and canary token are absent from action return values and from stripped JSON fixtures
-- [ ] 2.3 npm run lint passes
+- [x] 2.1 npm run test:run passes including stripper, action, cooldown, and sign-up-closed tests
+- [x] 2.2 Canary password and canary token are absent from action return values and from stripped JSON fixtures
+- [x] 2.3 npm run lint passes
 
 #### Manual
 
-- [ ] 2.4 Failed login in the UI still does not display the typed password as server-rendered defaultValue
+- [x] 2.4 Failed login in the UI still does not display the typed password as server-rendered defaultValue
 
 ### Phase 3: Write gate (#2)
 
