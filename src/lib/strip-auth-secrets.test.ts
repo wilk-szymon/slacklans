@@ -21,6 +21,16 @@ describe("stripAuthSecrets", () => {
     expect(input.token).toBe(CANARY_TOKEN);
   });
 
+  it("removes token keys inside arrays (list-sessions shape)", () => {
+    const input = [
+      { token: CANARY_TOKEN, id: "s1" },
+      { token: CANARY_TOKEN, id: "s2" },
+    ];
+    expect(stripAuthSecrets(input)).toEqual([{ id: "s1" }, { id: "s2" }]);
+    expect(JSON.stringify(stripAuthSecrets(input))).not.toContain(CANARY_TOKEN);
+    expect(input[0]?.token).toBe(CANARY_TOKEN);
+  });
+
   it("removes nested session.token", () => {
     const input = {
       session: { token: CANARY_TOKEN, expiresAt: "soon" },

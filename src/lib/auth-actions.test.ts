@@ -70,13 +70,24 @@ describe("login/register action bodies", () => {
 
   it("does not disclose USER_ALREADY_EXISTS from register", async () => {
     signUpEmail.mockRejectedValue({
+      name: "APIError",
+      status: "UNPROCESSABLE_ENTITY",
       body: {
         code: "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL",
         message: "User already exists. Use another email.",
       },
     });
-    const result = await register({}, form(CANARY_PASSWORD));
-    assertClean(result, CANARY_PASSWORD);
+    const duplicate = await register({}, form(CANARY_PASSWORD));
+    assertClean(duplicate, CANARY_PASSWORD);
+
+    signUpEmail.mockRejectedValue({
+      name: "APIError",
+      status: "BAD_REQUEST",
+      body: { code: "FAILED_TO_CREATE_USER", message: "nope" },
+    });
+    const generic = await register({}, form(CANARY_PASSWORD, "other@example.com"));
+    assertClean(generic, CANARY_PASSWORD);
+    expect(duplicate.error).toEqual(generic.error);
   });
 
   it("treats a short password as a distinct class without calling Better Auth", async () => {

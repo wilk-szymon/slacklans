@@ -28,10 +28,12 @@ describe("proxy cookie presence", () => {
       request("/spot", "better-auth.session_token=garbage"),
     );
     expect(isLoginRedirect(response)).toBe(false);
+    expect(response.headers.get("location")).toBeNull();
   });
 
   it("does not cookie-gate paths other than /spot", () => {
     const response = proxy(request("/"));
     expect(isLoginRedirect(response)).toBe(false);
+    expect(response.headers.get("location")).toBeNull();
   });
 });
