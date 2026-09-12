@@ -1,14 +1,9 @@
 import Link from "next/link";
 import { logout } from "@/lib/auth-actions";
-import { getSession } from "@/lib/session";
+import { loadChromeSession } from "@/lib/chrome-session";
 
 export async function SessionChrome() {
-  let session: Awaited<ReturnType<typeof getSession>> = null;
-  try {
-    session = await getSession();
-  } catch {
-    session = null;
-  }
+  const session = await loadChromeSession();
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 px-4 py-3">
