@@ -341,24 +341,24 @@ No database migration. Auth cookie contract unchanged. Existing sessions keep wo
 
 #### Automated
 
-- [x] 2.1 npm run test:run passes including stripper, action, cooldown, and sign-up-closed tests
-- [x] 2.2 Canary password and canary token are absent from action return values and from stripped JSON fixtures
-- [x] 2.3 npm run lint passes
+- [x] 2.1 npm run test:run passes including stripper, action, cooldown, and sign-up-closed tests — 852253d
+- [x] 2.2 Canary password and canary token are absent from action return values and from stripped JSON fixtures — 852253d
+- [x] 2.3 npm run lint passes — 852253d
 
 #### Manual
 
-- [x] 2.4 Failed login in the UI still does not display the typed password as server-rendered defaultValue
+- [x] 2.4 Failed login in the UI still does not display the typed password as server-rendered defaultValue — 852253d
 
 ### Phase 3: Write gate (#2)
 
 #### Automated
 
-- [ ] 3.1 npm run test:run passes including both createSession shapes and the proxy garbage-cookie case
-- [ ] 3.2 npm run lint passes
+- [x] 3.1 npm run test:run passes including both createSession shapes and the proxy garbage-cookie case
+- [x] 3.2 npm run lint passes
 
 #### Manual
 
-- [ ] 3.3 Do not use the map UI or a logged-out GET /spot as the write-gate check
+- [x] 3.3 Do not use the map UI or a logged-out GET /spot as the write-gate check
 
 ### Phase 4: Fail-open (#3)
 
