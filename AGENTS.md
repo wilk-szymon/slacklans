@@ -23,7 +23,7 @@ Slacklans is a Polish Gdynia slackline spots-and-events app. Stack: Next.js 16.3
 
 ## Build, Test, and Development Commands
 
-Scripts live in `@package.json`. Lint config is `@eslint.config.mjs`. No `test` script and no `*.test.*` files. Do not add a test runner unless asked.
+Scripts live in `@package.json`. Lint config is `@eslint.config.mjs`. Vitest is the test runner; `npm run test:run` is the local unit+integration gate. How to add a test lives in `context/foundation/test-plan.md` §6.
 
 ## Project Structure & Module Organization
 
