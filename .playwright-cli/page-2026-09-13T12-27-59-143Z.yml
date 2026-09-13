@@ -1,0 +1,12 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "Slacklans" [ref=e3] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e4]:
+      - link "Zaloguj się" [ref=e5] [cursor=pointer]:
+        - /url: /logowanie
+      - link "Zarejestruj się" [ref=e6] [cursor=pointer]:
+        - /url: /rejestracja
+  - main [ref=e7]:
+    - heading "Slacklans" [level=1] [ref=e8]
+    - paragraph [ref=e9]: Miejsca i sesje slackline w Gdyni. Możesz przeglądać bez konta.

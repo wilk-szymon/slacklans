@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx eslint --fix . --quiet",
+            "timeout": 10000
+          },
+          {
+            "type": "command",
+            "command": "npx tsc --noEmit",
+            "timeout": 30000
+        }
+        ]
+      }
+    ]
+  }
+}
