@@ -3,7 +3,7 @@ project: Slacklans
 version: 1
 status: draft
 created: 2026-09-05
-updated: 2026-09-09
+updated: 2026-09-14
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -42,7 +42,7 @@ People who slackline in Gdynia get asked by passersby how to join, and today the
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 | ----- | ---------------------- | --------------------------------- | ---------------- | -------------- | -------- |
 | F-01 | minimal-login | (foundation) email+password login issues a session; visitors can still read without an account | — | FR-001, Access Control | done |
-| S-01 | post-session-and-share | user can create a spot on the map, post a single event with that spot and start/finish time, and a visitor can open the event URL and see time and location with no account | F-01 | US-01, FR-002, FR-004, FR-005, FR-006, FR-010 | in-progress |
+| S-01 | post-session-and-share | user can create a spot on the map, post a single event with that spot and start/finish time, and a visitor can open the event URL and see time and location with no account | F-01 | US-01, FR-002, FR-004, FR-005, FR-006, FR-010 | done |
 | S-03 | next-session-home | user can open the app with no account and see the next upcoming session (soonest start) with time and location | S-01 | US-02, FR-012 | proposed |
 | S-02 | spot-photos | user can add photos to a spot so they show on the spot and on events at that spot, not as broken placeholders | S-01 | US-01, FR-003 | proposed |
 | S-04 | creator-edit-session | user can edit a spot or event only when they created it | S-01 | FR-011 | proposed |
@@ -96,7 +96,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced immediately after login because it is the north star. Map place-picking and persistence land here (first slice that needs them), not as a prior layer. Photos are S-02 so this slice stays one create+visit flow. UI in Polish; usable on a phone outdoors (NFR).
-- **Status:** in-progress
+- **Status:** done
 
 ### S-03: Next session on the home screen
 
@@ -167,3 +167,4 @@ None. PRD `## Open Questions` was empty at capture time.
 ## Done
 
 - **F-01: (foundation) email+password login issues a session; unauthenticated visitors can still read.** — Archived 2026-09-08 → `context/archive/2026-09-05-minimal-login/`. Lesson: —.
+- **S-01: user can create a spot by picking a place on the map, create a single event with that spot and start/finish time, and a visitor can open the event page URL and see time and location with no account and no extra personal data.** — Archived 2026-09-14 → `context/archive/2026-09-08-post-session-and-share/`. Lesson: —.

@@ -1,10 +1,10 @@
 ---
 change_id: post-session-and-share
 title: Post session and share
-status: impl_reviewed
+status: archived
 created: 2026-09-08
-updated: 2026-09-09
-archived_at: null
+updated: 2026-09-14
+archived_at: 2026-09-14T19:37:46Z
 ---
 
 ## Notes
