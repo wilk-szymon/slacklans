@@ -43,7 +43,7 @@ People who slackline in Gdynia get asked by passersby how to join, and today the
 | ----- | ---------------------- | --------------------------------- | ---------------- | -------------- | -------- |
 | F-01 | minimal-login | (foundation) email+password login issues a session; visitors can still read without an account | — | FR-001, Access Control | done |
 | S-01 | post-session-and-share | user can create a spot on the map, post a single event with that spot and start/finish time, and a visitor can open the event URL and see time and location with no account | F-01 | US-01, FR-002, FR-004, FR-005, FR-006, FR-010 | done |
-| S-03 | next-session-home | user can open the app with no account and see the next upcoming session (soonest start) with time and location | S-01 | US-02, FR-012 | proposed |
+| S-03 | next-session-home | user can open the app with no account and see the next upcoming session (soonest start) with time and location | S-01 | US-02, FR-012 | done |
 | S-02 | spot-photos | user can add photos to a spot so they show on the spot and on events at that spot, not as broken placeholders | S-01 | US-01, FR-003 | proposed |
 | S-04 | creator-edit-session | user can edit a spot or event only when they created it | S-01 | FR-011 | proposed |
 
@@ -108,7 +108,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Placed right after the north star so the walk-up “app name only” path is not waiting on photos or edit. Ranking is start time only; same-time tie-break is parked. First paint should meet the 2-second NFR, including logged-out.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Photos on a spot
 
@@ -168,3 +168,4 @@ None. PRD `## Open Questions` was empty at capture time.
 
 - **F-01: (foundation) email+password login issues a session; unauthenticated visitors can still read.** — Archived 2026-09-08 → `context/archive/2026-09-05-minimal-login/`. Lesson: —.
 - **S-01: user can create a spot by picking a place on the map, create a single event with that spot and start/finish time, and a visitor can open the event page URL and see time and location with no account and no extra personal data.** — Archived 2026-09-14 → `context/archive/2026-09-08-post-session-and-share/`. Lesson: —.
+- **S-03: user can open the app with no account and see the next upcoming event highlighted (soonest start time) with time and location, plus a list in the same order.** — Archived 2026-09-14 → `context/archive/2026-09-14-next-session-home/`. Lesson: —.
