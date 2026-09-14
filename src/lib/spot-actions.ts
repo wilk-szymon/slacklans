@@ -1,6 +1,6 @@
 "use server";
 
-import { count, eq } from "drizzle-orm";
+import { and, count, eq, gt } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { event, spot } from "@/lib/schema/spots";
@@ -219,8 +219,9 @@ export async function updateSession(
     return { error: TIME_ORDER };
   }
 
+  const now = new Date();
   const row = await loadEditableEvent(eventId);
-  const gate = editGateError(row, session.user.id, new Date());
+  const gate = editGateError(row, session.user.id, now);
   if (gate || !row) {
     return { error: gate ?? EDIT_FORBIDDEN };
   }
@@ -229,7 +230,13 @@ export async function updateSession(
     await getDb()
       .update(event)
       .set({ startsAt, endsAt })
-      .where(eq(event.id, eventId));
+      .where(
+        and(
+          eq(event.id, eventId),
+          eq(event.creatorId, session.user.id),
+          gt(event.endsAt, now),
+        ),
+      );
   } catch {
     return { error: SAVE_ERROR };
   }
@@ -250,15 +257,22 @@ export async function deleteSession(
     return { error: EDIT_FORBIDDEN };
   }
 
+  const now = new Date();
   const row = await loadEditableEvent(eventId);
-  const gate = editGateError(row, session.user.id, new Date());
+  const gate = editGateError(row, session.user.id, now);
   if (gate || !row) {
     return { error: gate ?? EDIT_FORBIDDEN };
   }
 
   try {
     await getDb().transaction(async (tx) => {
-      await tx.delete(event).where(eq(event.id, eventId));
+      await tx.delete(event).where(
+        and(
+          eq(event.id, eventId),
+          eq(event.creatorId, session.user.id),
+          gt(event.endsAt, now),
+        ),
+      );
       const [remaining] = await tx
         .select({ n: count() })
         .from(event)

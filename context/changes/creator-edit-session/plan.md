@@ -216,25 +216,25 @@ None. Rollback: remove `/moje`, `/edytuj`, chrome link, and the new actions. Row
 
 #### Automated
 
-- [x] 1.1 npm run test:run covers missing session, other user, finished, own update, own delete, unused own pin deleted, someone else’s pin kept
-- [x] 1.2 npm run lint passes
+- [x] 1.1 npm run test:run covers missing session, other user, finished, own update, own delete, unused own pin deleted, someone else’s pin kept — 520c4fb
+- [x] 1.2 npm run lint passes — 520c4fb
 
 ### Phase 2: Gated edit page and 403
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run test:run passes
-- [ ] 2.3 public-get-session-imports still asserts sesja/[id]/page.tsx and page.tsx contain no getSession
-- [ ] 2.4 npm run build passes
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run test:run passes
+- [x] 2.3 public-get-session-imports still asserts sesja/[id]/page.tsx and page.tsx contain no getSession
+- [x] 2.4 npm run build passes
 
 #### Manual
 
-- [ ] 2.5 Logged-in creator of a live/future session: /edytuj shows Warsaw times; save updates public /sesja/<id>
-- [ ] 2.6 Logged-in other user: 403 copy, times unchanged
-- [ ] 2.7 Logged-out: login, then back to /edytuj after login
-- [ ] 2.8 Finish ≤ start → Polish error, no persist
-- [ ] 2.9 After ends_at, creator sees 403, not the form
+- [x] 2.5 Logged-in creator of a live/future session: /edytuj shows Warsaw times; save updates public /sesja/<id>
+- [x] 2.6 Logged-in other user: 403 copy, times unchanged
+- [x] 2.7 Logged-out: login, then back to /edytuj after login
+- [x] 2.8 Finish ≤ start → Polish error, no persist
+- [x] 2.9 After ends_at, creator sees 403, not the form
 
 ### Phase 3: Moje sesje list and chrome
 
