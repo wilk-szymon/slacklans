@@ -281,7 +281,9 @@ export async function deleteSession(
         Number(remaining?.n ?? 1) === 0 &&
         row.spotCreatorId === session.user.id
       ) {
-        await tx.delete(spot).where(eq(spot.id, row.spotId));
+        await tx.delete(spot).where(
+          and(eq(spot.id, row.spotId), eq(spot.creatorId, session.user.id)),
+        );
       }
     });
   } catch {
