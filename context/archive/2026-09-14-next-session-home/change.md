@@ -1,10 +1,10 @@
 ---
 change_id: next-session-home
 title: Next session home
-status: impl_reviewed
+status: archived
 created: 2026-09-14
 updated: 2026-09-14
-archived_at: null
+archived_at: 2026-09-14T20:36:29Z
 ---
 
 ## Notes
