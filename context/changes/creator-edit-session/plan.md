@@ -223,31 +223,31 @@ None. Rollback: remove `/moje`, `/edytuj`, chrome link, and the new actions. Row
 
 #### Automated
 
-- [x] 2.1 npm run lint passes
-- [x] 2.2 npm run test:run passes
-- [x] 2.3 public-get-session-imports still asserts sesja/[id]/page.tsx and page.tsx contain no getSession
-- [x] 2.4 npm run build passes
+- [x] 2.1 npm run lint passes — 9aaea35
+- [x] 2.2 npm run test:run passes — 9aaea35
+- [x] 2.3 public-get-session-imports still asserts sesja/[id]/page.tsx and page.tsx contain no getSession — 9aaea35
+- [x] 2.4 npm run build passes — 9aaea35
 
 #### Manual
 
-- [x] 2.5 Logged-in creator of a live/future session: /edytuj shows Warsaw times; save updates public /sesja/<id>
-- [x] 2.6 Logged-in other user: 403 copy, times unchanged
-- [x] 2.7 Logged-out: login, then back to /edytuj after login
-- [x] 2.8 Finish ≤ start → Polish error, no persist
-- [x] 2.9 After ends_at, creator sees 403, not the form
+- [x] 2.5 Logged-in creator of a live/future session: /edytuj shows Warsaw times; save updates public /sesja/<id> — 9aaea35
+- [x] 2.6 Logged-in other user: 403 copy, times unchanged — 9aaea35
+- [x] 2.7 Logged-out: login, then back to /edytuj after login — 9aaea35
+- [x] 2.8 Finish ≤ start → Polish error, no persist — 9aaea35
+- [x] 2.9 After ends_at, creator sees 403, not the form — 9aaea35
 
 ### Phase 3: Moje sesje list and chrome
 
 #### Automated
 
-- [ ] 3.1 npm run lint passes
-- [ ] 3.2 npm run test:run passes (proxy: /moje without cookie redirects; /sesja/anything still not cookie-gated)
-- [ ] 3.3 npm run build passes
-- [ ] 3.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts --project=chromium still 200 with Slacklans heading and logged-out chrome
+- [x] 3.1 npm run lint passes
+- [x] 3.2 npm run test:run passes (proxy: /moje without cookie redirects; /sesja/anything still not cookie-gated)
+- [x] 3.3 npm run build passes
+- [x] 3.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts --project=chromium still 200 with Slacklans heading and logged-out chrome
 
 #### Manual
 
-- [ ] 3.5 Logged-in chrome Moje sesje lists only my not-yet-finished sessions
-- [ ] 3.6 Row opens /edytuj; delete last own event on own unused pin removes the spot; delete last event on someone else’s pin leaves the spot
-- [ ] 3.7 Public /sesja/<id> has no Edytuj; logged-out visitor still sees times
-- [ ] 3.8 Phone-width: chrome and list rows tappable
+- [x] 3.5 Logged-in chrome Moje sesje lists only my not-yet-finished sessions
+- [x] 3.6 Row opens /edytuj; delete last own event on own unused pin removes the spot; delete last event on someone else’s pin leaves the spot
+- [x] 3.7 Public /sesja/<id> has no Edytuj; logged-out visitor still sees times
+- [x] 3.8 Phone-width: chrome and list rows tappable

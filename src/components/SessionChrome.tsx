@@ -18,6 +18,12 @@ export async function SessionChrome() {
           >
             Nowa sesja
           </Link>
+          <Link
+            href="/moje"
+            className="flex min-h-12 items-center px-4 text-base font-medium"
+          >
+            Moje sesje
+          </Link>
           <span className="truncate text-sm">{session.user.email}</span>
           <form action={logout}>
             <button
