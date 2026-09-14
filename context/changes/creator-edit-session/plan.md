@@ -240,14 +240,14 @@ None. Rollback: remove `/moje`, `/edytuj`, chrome link, and the new actions. Row
 
 #### Automated
 
-- [x] 3.1 npm run lint passes
-- [x] 3.2 npm run test:run passes (proxy: /moje without cookie redirects; /sesja/anything still not cookie-gated)
-- [x] 3.3 npm run build passes
-- [x] 3.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts --project=chromium still 200 with Slacklans heading and logged-out chrome
+- [x] 3.1 npm run lint passes — df79a53
+- [x] 3.2 npm run test:run passes (proxy: /moje without cookie redirects; /sesja/anything still not cookie-gated) — df79a53
+- [x] 3.3 npm run build passes — df79a53
+- [x] 3.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts --project=chromium still 200 with Slacklans heading and logged-out chrome — df79a53
 
 #### Manual
 
-- [x] 3.5 Logged-in chrome Moje sesje lists only my not-yet-finished sessions
-- [x] 3.6 Row opens /edytuj; delete last own event on own unused pin removes the spot; delete last event on someone else’s pin leaves the spot
-- [x] 3.7 Public /sesja/<id> has no Edytuj; logged-out visitor still sees times
-- [x] 3.8 Phone-width: chrome and list rows tappable
+- [x] 3.5 Logged-in chrome Moje sesje lists only my not-yet-finished sessions — df79a53
+- [x] 3.6 Row opens /edytuj; delete last own event on own unused pin removes the spot; delete last event on someone else’s pin leaves the spot — df79a53
+- [x] 3.7 Public /sesja/<id> has no Edytuj; logged-out visitor still sees times — df79a53
+- [x] 3.8 Phone-width: chrome and list rows tappable — df79a53

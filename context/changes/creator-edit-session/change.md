@@ -1,7 +1,7 @@
 ---
 change_id: creator-edit-session
 title: Creator edit session
-status: impl_reviewed
+status: implemented
 created: 2026-09-14
 updated: 2026-09-14
 archived_at: null
