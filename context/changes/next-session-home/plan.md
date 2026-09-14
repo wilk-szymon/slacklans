@@ -191,24 +191,24 @@ None. No DDL. Rollback is revert `src/app/page.tsx` to the marketing stub and de
 
 #### Automated
 
-- [x] 1.1 npm run test:run covers in-progress, drop finished, empty, start-tie by finished-host count, start-tie by id, rest order
-- [x] 1.2 npm run lint passes
+- [x] 1.1 npm run test:run covers in-progress, drop finished, empty, start-tie by finished-host count, start-tie by id, rest order — a614c25
+- [x] 1.2 npm run lint passes — a614c25
 
 ### Phase 2: Home hero, list, and empty
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run test:run passes (Phase 1 tests + public-get-session-imports still asserts page.tsx has no getSession)
-- [ ] 2.3 npm run build passes
-- [ ] 2.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts is 200 with heading Slacklans and logged-out chrome
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run test:run passes (Phase 1 tests + public-get-session-imports still asserts page.tsx has no getSession)
+- [x] 2.3 npm run build passes
+- [x] 2.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts is 200 with heading Slacklans and logged-out chrome
 
 #### Manual
 
-- [ ] 2.5 Logged-out `/` with no joinable sessions: heading + empty copy
-- [ ] 2.6 A live session is the hero when a later future session also exists
-- [ ] 2.7 Same start: host with more finished sessions is the hero; equal counts → smaller event id
-- [ ] 2.8 Logged-out click on hero and a list row opens `/sesja/<id>`
-- [ ] 2.9 Phone-width: hero and rows are tappable, not hover-only
-- [ ] 2.10 `/` has no Leaflet network requests
-- [ ] 2.11 First paint feels within ~2s on phone
+- [x] 2.5 Logged-out `/` with no joinable sessions: heading + empty copy
+- [x] 2.6 A live session is the hero when a later future session also exists
+- [x] 2.7 Same start: host with more finished sessions is the hero; equal counts → smaller event id
+- [x] 2.8 Logged-out click on hero and a list row opens `/sesja/<id>`
+- [x] 2.9 Phone-width: hero and rows are tappable, not hover-only
+- [x] 2.10 `/` has no Leaflet network requests
+- [x] 2.11 First paint feels within ~2s on phone

@@ -78,6 +78,7 @@ export default defineConfig({
     reuseExistingServer: false,
     timeout: 120_000,
     env: {
+      ...process.env,
       E2E_THROW_SESSION: '1',
     },
   },
