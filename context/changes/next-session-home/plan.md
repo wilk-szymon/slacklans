@@ -198,17 +198,17 @@ None. No DDL. Rollback is revert `src/app/page.tsx` to the marketing stub and de
 
 #### Automated
 
-- [x] 2.1 npm run lint passes
-- [x] 2.2 npm run test:run passes (Phase 1 tests + public-get-session-imports still asserts page.tsx has no getSession)
-- [x] 2.3 npm run build passes
-- [x] 2.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts is 200 with heading Slacklans and logged-out chrome
+- [x] 2.1 npm run lint passes — f84e67c
+- [x] 2.2 npm run test:run passes (Phase 1 tests + public-get-session-imports still asserts page.tsx has no getSession) — f84e67c
+- [x] 2.3 npm run build passes — f84e67c
+- [x] 2.4 npx playwright test e2e/public-home-survives-session-throw.spec.ts is 200 with heading Slacklans and logged-out chrome — f84e67c
 
 #### Manual
 
-- [x] 2.5 Logged-out `/` with no joinable sessions: heading + empty copy
-- [x] 2.6 A live session is the hero when a later future session also exists
-- [x] 2.7 Same start: host with more finished sessions is the hero; equal counts → smaller event id
-- [x] 2.8 Logged-out click on hero and a list row opens `/sesja/<id>`
-- [x] 2.9 Phone-width: hero and rows are tappable, not hover-only
-- [x] 2.10 `/` has no Leaflet network requests
-- [x] 2.11 First paint feels within ~2s on phone
+- [x] 2.5 Logged-out `/` with no joinable sessions: heading + empty copy — f84e67c
+- [x] 2.6 A live session is the hero when a later future session also exists — f84e67c
+- [x] 2.7 Same start: host with more finished sessions is the hero; equal counts → smaller event id — f84e67c
+- [x] 2.8 Logged-out click on hero and a list row opens `/sesja/<id>` — f84e67c
+- [x] 2.9 Phone-width: hero and rows are tappable, not hover-only — f84e67c
+- [x] 2.10 `/` has no Leaflet network requests — f84e67c
+- [x] 2.11 First paint feels within ~2s on phone — f84e67c
