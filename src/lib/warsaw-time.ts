@@ -118,3 +118,13 @@ export function formatWarsaw(date: Date): string {
     timeStyle: "short",
   }).format(date);
 }
+
+function pad2(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+/** Format a UTC instant as a `datetime-local` value in Europe/Warsaw. */
+export function formatWarsawLocal(date: Date): string {
+  const wall = warsawParts(date.getTime());
+  return `${wall.year}-${pad2(wall.month)}-${pad2(wall.day)}T${pad2(wall.hour)}:${pad2(wall.minute)}`;
+}
