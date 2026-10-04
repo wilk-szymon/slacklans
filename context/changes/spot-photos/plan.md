@@ -285,32 +285,32 @@ Public pages must not wait on Blob token generation. Image bytes are not optimiz
 
 #### Automated
 
-- [x] 1.1 `npm run db:generate` produces a new `0003_*` migration that creates `session_photo` and `spot_photo` only
-- [x] 1.2 `npm run db:migrate` applies on a database that already has `0000`–`0002`
-- [x] 1.3 `npm run test:run` covers logged-out rejection, another user's URL, non-owner spot upload, feature across a different spot, author delete of a featured photo, owner unfeature, finished-session add, and `deleteSession` removing photo rows before the event
-- [x] 1.4 `npm run lint` passes
-- [x] 1.5 `npx tsc --noEmit` passes
+- [x] 1.1 `npm run db:generate` produces a new `0003_*` migration that creates `session_photo` and `spot_photo` only — c8c5664
+- [x] 1.2 `npm run db:migrate` applies on a database that already has `0000`–`0002` — c8c5664
+- [x] 1.3 `npm run test:run` covers logged-out rejection, another user's URL, non-owner spot upload, feature across a different spot, author delete of a featured photo, owner unfeature, finished-session add, and `deleteSession` removing photo rows before the event — c8c5664
+- [x] 1.4 `npm run lint` passes — c8c5664
+- [x] 1.5 `npx tsc --noEmit` passes — c8c5664
 
 #### Manual
 
-- [x] 1.6 After migrate, existing login and an existing session page still load
-- [x] 1.7 `BLOB_READ_WRITE_TOKEN` is present in `.env.local` from a public Blob store whose Development, Preview, and Production environments are connected. The token is not committed
+- [x] 1.6 After migrate, existing login and an existing session page still load — c8c5664
+- [x] 1.7 `BLOB_READ_WRITE_TOKEN` is present in `.env.local` from a public Blob store whose Development, Preview, and Production environments are connected. The token is not committed — c8c5664
 
 ### Phase 2: Public pages
 
 #### Automated
 
-- [ ] 2.1 `npm run test:run` passes, including the structural check that `src/app/sesja/[id]/page.tsx` and `src/app/miejsce/[id]/page.tsx` do not contain `getSession`
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 `npx tsc --noEmit` passes
+- [x] 2.1 `npm run test:run` passes, including the structural check that `src/app/sesja/[id]/page.tsx` and `src/app/miejsce/[id]/page.tsx` do not contain `getSession`
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 `npx tsc --noEmit` passes
 
 #### Manual
 
-- [ ] 2.4 A session with only session photos shows them on `/sesja/[id]` and does not show them on `/miejsce/[id]` until one is featured
-- [ ] 2.5 A featured photo and an owner spot photo show on `/miejsce/[id]` and do not appear on a different session at that spot
-- [ ] 2.6 A session with no photos has no photo heading and no image
-- [ ] 2.7 The place link on the session opens `/miejsce/[id]`
-- [ ] 2.8 `/` still shows time and place and no image
+- [x] 2.4 A session with only session photos shows them on `/sesja/[id]` and does not show them on `/miejsce/[id]` until one is featured
+- [x] 2.5 A featured photo and an owner spot photo show on `/miejsce/[id]` and do not appear on a different session at that spot
+- [x] 2.6 A session with no photos has no photo heading and no image
+- [x] 2.7 The place link on the session opens `/miejsce/[id]`
+- [x] 2.8 `/` still shows time and place and no image
 
 ### Phase 3: Add and manage
 

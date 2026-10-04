@@ -15,6 +15,10 @@ describe("public pages stay session-free", () => {
     expect(source("src/app/sesja/[id]/page.tsx")).not.toContain("getSession");
   });
 
+  it("src/app/miejsce/[id]/page.tsx does not contain getSession", () => {
+    expect(source("src/app/miejsce/[id]/page.tsx")).not.toContain("getSession");
+  });
+
   it("src/app/layout.tsx does not call getSession and still mounts SessionChrome", () => {
     const layout = source("src/app/layout.tsx");
     expect(layout).not.toContain("getSession");

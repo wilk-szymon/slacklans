@@ -42,6 +42,13 @@ describe("proxy cookie presence", () => {
     expect(response.headers.get("location")).toBeNull();
   });
 
+  it("does not cookie-gate /miejsce paths", () => {
+    const response = proxy(
+      request("/miejsce/22222222-2222-4222-8222-222222222222"),
+    );
+    expect(response.headers.get("location")).toBeNull();
+  });
+
   it("does not cookie-gate /", () => {
     const response = proxy(request("/"));
     expect(response.headers.get("location")).toBeNull();
