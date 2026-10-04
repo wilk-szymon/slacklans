@@ -10,6 +10,8 @@ const {
   del,
   limit,
   countWhere,
+  blobHead,
+  blobDel,
 } = vi.hoisted(() => {
   const insert = vi.fn();
   const limit = vi.fn();
@@ -26,7 +28,8 @@ const {
   }));
   const update = vi.fn(() => ({ set }));
   const deleteWhere = vi.fn(() => Promise.resolve());
-  const del = vi.fn(() => ({ where: deleteWhere }));
+  const del = vi.fn<(table: unknown) => { where: typeof deleteWhere }>();
+  del.mockReturnValue({ where: deleteWhere });
   const transaction = vi.fn();
   return {
     getSession: vi.fn(),
@@ -37,6 +40,8 @@ const {
     del,
     limit,
     countWhere,
+    blobHead: vi.fn(),
+    blobDel: vi.fn(),
     getDb: vi.fn(() => ({
       insert,
       transaction,
@@ -49,12 +54,14 @@ const {
 
 vi.mock("@/lib/session", () => ({ getSession }));
 vi.mock("@/lib/db", () => ({ getDb }));
+vi.mock("@vercel/blob", () => ({ head: blobHead, del: blobDel }));
 vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
     throw new Error(`NEXT_REDIRECT:${url}`);
   },
 }));
 
+import { event, sessionPhoto, spot, spotPhoto } from "@/lib/schema/spots";
 import {
   createSession,
   deleteSession,
@@ -132,6 +139,118 @@ describe("createSession write gate", () => {
   });
 });
 
+const SESSION_BLOB =
+  "https://example.public.blob.vercel-storage.com/session-photos/user-1/a.jpg";
+const OTHER_SESSION_BLOB =
+  "https://example.public.blob.vercel-storage.com/session-photos/user-2/a.jpg";
+const SPOT_BLOB =
+  "https://example.public.blob.vercel-storage.com/spot-photos/user-1/b.png";
+
+function headResult(pathname: string, contentType: string) {
+  return {
+    url: `https://example.public.blob.vercel-storage.com/${pathname}`,
+    pathname,
+    contentType,
+    size: 128,
+  };
+}
+
+describe("createSession photos", () => {
+  beforeEach(() => {
+    getSession.mockReset();
+    getDb.mockClear();
+    insert.mockReset();
+    transaction.mockReset();
+    countWhere.mockReset();
+    blobHead.mockReset();
+    blobDel.mockReset();
+    getSession.mockResolvedValue(USER);
+  });
+
+  it("does not insert when a non-owner submits a spot photo url", async () => {
+    countWhere.mockResolvedValue([{ id: SPOT_ID, creatorId: "user-2" }]);
+    const data = sessionForm({ spotId: SPOT_ID });
+    data.append("spotPhotoUrl", SPOT_BLOB);
+
+    const result = await createSession({}, data);
+
+    expect(result.error).toBeDefined();
+    expect(transaction).not.toHaveBeenCalled();
+    expect(insert).not.toHaveBeenCalled();
+    expect(blobHead).not.toHaveBeenCalled();
+  });
+
+  it("does not insert when one session photo url belongs to another user", async () => {
+    countWhere.mockResolvedValue([{ id: SPOT_ID, creatorId: "user-1" }]);
+    blobHead.mockImplementation(async (url: string) => {
+      if (url === OTHER_SESSION_BLOB) {
+        return headResult("session-photos/user-2/a.jpg", "image/jpeg");
+      }
+      return headResult("session-photos/user-1/a.jpg", "image/jpeg");
+    });
+    const data = sessionForm({ spotId: SPOT_ID });
+    data.append("sessionPhotoUrl", SESSION_BLOB);
+    data.append("sessionPhotoUrl", OTHER_SESSION_BLOB);
+
+    const result = await createSession({}, data);
+
+    expect(result.error).toBeDefined();
+    expect(transaction).not.toHaveBeenCalled();
+    expect(insert).not.toHaveBeenCalled();
+  });
+
+  it("inserts the event and verified photos in one transaction", async () => {
+    countWhere.mockResolvedValue([{ id: SPOT_ID, creatorId: "user-1" }]);
+    blobHead.mockImplementation(async (url: string) => {
+      if (url === SPOT_BLOB) {
+        return headResult("spot-photos/user-1/b.png", "image/png");
+      }
+      return headResult("session-photos/user-1/a.jpg", "image/jpeg");
+    });
+    const values = vi.fn(async () => undefined);
+    insert.mockReturnValue({ values });
+    transaction.mockImplementation(
+      async (fn: (tx: { insert: typeof insert }) => Promise<void>) => {
+        await fn({ insert });
+      },
+    );
+    const data = sessionForm({ spotId: SPOT_ID });
+    data.append("sessionPhotoUrl", SESSION_BLOB);
+    data.append("spotPhotoUrl", SPOT_BLOB);
+
+    await expect(createSession({}, data)).rejects.toThrow(
+      /NEXT_REDIRECT:\/sesja\//,
+    );
+    expect(transaction).toHaveBeenCalledTimes(1);
+    expect(values).toHaveBeenCalledTimes(3);
+    expect(values).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ spotId: SPOT_ID, creatorId: "user-1" }),
+    );
+    expect(values).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        uploaderId: "user-1",
+        featured: false,
+        pathname: "session-photos/user-1/a.jpg",
+      }),
+    );
+    expect(values).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({
+        spotId: SPOT_ID,
+        uploaderId: "user-1",
+        pathname: "spot-photos/user-1/b.png",
+      }),
+    );
+    expect(insert.mock.calls.map((call) => call[0])).toEqual([
+      event,
+      sessionPhoto,
+      spotPhoto,
+    ]);
+  });
+});
+
 describe("updateSession write gate", () => {
   beforeEach(() => {
     getSession.mockReset();
@@ -191,6 +310,7 @@ describe("deleteSession write gate", () => {
     del.mockClear();
     limit.mockReset();
     countWhere.mockReset();
+    blobDel.mockReset();
     transaction.mockReset();
     transaction.mockImplementation(async (fn: (tx: unknown) => Promise<void>) =>
       fn({ delete: del, select: getDb().select }),
@@ -233,34 +353,85 @@ describe("deleteSession write gate", () => {
   it("deletes the event for the creator of a not-finished session", async () => {
     getSession.mockResolvedValue(USER);
     limit.mockResolvedValue([editableRow()]);
-    countWhere.mockResolvedValue([{ n: 1 }]);
+    countWhere.mockResolvedValueOnce([]).mockResolvedValueOnce([{ n: 1 }]);
 
     await expect(deleteSession({}, editForm())).rejects.toThrow(
       "NEXT_REDIRECT:/moje",
     );
     expect(transaction).toHaveBeenCalled();
-    expect(del).toHaveBeenCalled();
+    expect(del.mock.calls.map((call) => call[0])).toEqual([sessionPhoto, event]);
+    expect(blobDel).not.toHaveBeenCalled();
   });
 
   it("also deletes an unused pin the creator owns", async () => {
     getSession.mockResolvedValue(USER);
     limit.mockResolvedValue([editableRow({ spotCreatorId: "user-1" })]);
-    countWhere.mockResolvedValue([{ n: 0 }]);
+    countWhere
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([{ n: 0 }])
+      .mockResolvedValueOnce([]);
 
     await expect(deleteSession({}, editForm())).rejects.toThrow(
       "NEXT_REDIRECT:/moje",
     );
-    expect(del).toHaveBeenCalledTimes(2);
+    expect(del.mock.calls.map((call) => call[0])).toEqual([
+      sessionPhoto,
+      event,
+      spotPhoto,
+      spot,
+    ]);
+    expect(blobDel).not.toHaveBeenCalled();
   });
 
   it("does not delete someone else's pin when it becomes empty", async () => {
     getSession.mockResolvedValue(USER);
     limit.mockResolvedValue([editableRow({ spotCreatorId: "user-2" })]);
-    countWhere.mockResolvedValue([{ n: 0 }]);
+    countWhere.mockResolvedValueOnce([]).mockResolvedValueOnce([{ n: 0 }]);
 
     await expect(deleteSession({}, editForm())).rejects.toThrow(
       "NEXT_REDIRECT:/moje",
     );
-    expect(del).toHaveBeenCalledTimes(1);
+    expect(del.mock.calls.map((call) => call[0])).toEqual([sessionPhoto, event]);
+    expect(blobDel).not.toHaveBeenCalled();
+  });
+
+  it("removes photo rows before the event and deletes blobs after commit", async () => {
+    getSession.mockResolvedValue(USER);
+    limit.mockResolvedValue([editableRow()]);
+    countWhere
+      .mockResolvedValueOnce([{ pathname: "session-photos/user-1/a.jpg" }])
+      .mockResolvedValueOnce([{ n: 0 }])
+      .mockResolvedValueOnce([{ pathname: "spot-photos/user-1/b.jpg" }]);
+
+    await expect(deleteSession({}, editForm())).rejects.toThrow(
+      "NEXT_REDIRECT:/moje",
+    );
+    expect(del.mock.calls.map((call) => call[0])).toEqual([
+      sessionPhoto,
+      event,
+      spotPhoto,
+      spot,
+    ]);
+    expect(blobDel).toHaveBeenCalledWith([
+      "session-photos/user-1/a.jpg",
+      "spot-photos/user-1/b.jpg",
+    ]);
+    expect(blobDel.mock.invocationCallOrder[0]).toBeGreaterThan(
+      transaction.mock.invocationCallOrder[0] ?? 0,
+    );
+  });
+
+  it("still leaves the session deleted when the blob delete fails", async () => {
+    getSession.mockResolvedValue(USER);
+    limit.mockResolvedValue([editableRow()]);
+    countWhere
+      .mockResolvedValueOnce([{ pathname: "session-photos/user-1/a.jpg" }])
+      .mockResolvedValueOnce([{ n: 1 }]);
+    blobDel.mockRejectedValue(new Error("blob down"));
+
+    await expect(deleteSession({}, editForm())).rejects.toThrow(
+      "NEXT_REDIRECT:/moje",
+    );
+    expect(del.mock.calls.map((call) => call[0])).toEqual([sessionPhoto, event]);
   });
 });

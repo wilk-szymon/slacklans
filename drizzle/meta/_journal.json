@@ -22,6 +22,13 @@
       "when": 1788981779512,
       "tag": "0002_fine_fenris",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791105557455,
+      "tag": "0003_session_spot_photos",
+      "breakpoints": true
     }
   ]
 }

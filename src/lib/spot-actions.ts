@@ -3,7 +3,13 @@
 import { and, count, eq, gt } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
-import { event, spot } from "@/lib/schema/spots";
+import {
+  collectOwnedPhotos,
+  PHOTO_SAVE_ERROR,
+  removeBlobs,
+  type OwnedPhoto,
+} from "@/lib/photo-blob";
+import { event, sessionPhoto, spot, spotPhoto } from "@/lib/schema/spots";
 import { getSession } from "@/lib/session";
 import { parseWarsawLocal } from "@/lib/warsaw-time";
 
@@ -31,6 +37,80 @@ function normalizeName(value: FormDataEntryValue | null): string | null {
     return null;
   }
   return trimmed.slice(0, 200);
+}
+
+function urlList(formData: FormData, key: string): string[] {
+  return formData
+    .getAll(key)
+    .flatMap((value) => (typeof value === "string" ? [value.trim()] : []))
+    .filter((value) => value !== "");
+}
+
+function pathnamesOf(rows: { pathname?: string }[]): string[] {
+  return rows.flatMap((row) =>
+    typeof row.pathname === "string" && row.pathname.length > 0
+      ? [row.pathname]
+      : [],
+  );
+}
+
+type Db = ReturnType<typeof getDb>;
+type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
+
+async function ownedCreatePhotos(
+  userId: string,
+  sessionUrls: string[],
+  spotUrls: string[],
+): Promise<
+  { ok: true; sessionPhotos: OwnedPhoto[]; spotPhotos: OwnedPhoto[] } | { ok: false }
+> {
+  const sessionPhotos = await collectOwnedPhotos(userId, "session", sessionUrls);
+  if (!sessionPhotos.ok) {
+    return { ok: false };
+  }
+  const spotPhotos = await collectOwnedPhotos(userId, "spot", spotUrls);
+  if (!spotPhotos.ok) {
+    return { ok: false };
+  }
+  return {
+    ok: true,
+    sessionPhotos: sessionPhotos.photos,
+    spotPhotos: spotPhotos.photos,
+  };
+}
+
+async function writeEventPhotos(
+  tx: Tx,
+  input: {
+    eventId: string;
+    spotId: string;
+    uploaderId: string;
+    createdAt: Date;
+    sessionPhotos: OwnedPhoto[];
+    spotPhotos: OwnedPhoto[];
+  },
+): Promise<void> {
+  for (const photo of input.sessionPhotos) {
+    await tx.insert(sessionPhoto).values({
+      id: crypto.randomUUID(),
+      eventId: input.eventId,
+      uploaderId: input.uploaderId,
+      blobUrl: photo.blobUrl,
+      pathname: photo.pathname,
+      featured: false,
+      createdAt: input.createdAt,
+    });
+  }
+  for (const photo of input.spotPhotos) {
+    await tx.insert(spotPhoto).values({
+      id: crypto.randomUUID(),
+      spotId: input.spotId,
+      uploaderId: input.uploaderId,
+      blobUrl: photo.blobUrl,
+      pathname: photo.pathname,
+      createdAt: input.createdAt,
+    });
+  }
 }
 
 function parseCoord(
@@ -77,6 +157,8 @@ export async function createSession(
   const lat = parseCoord(formData.get("lat"), -90, 90);
   const lng = parseCoord(formData.get("lng"), -180, 180);
   const name = normalizeName(formData.get("name"));
+  const sessionPhotoUrls = urlList(formData, "sessionPhotoUrl");
+  const spotPhotoUrls = urlList(formData, "spotPhotoUrl");
   const creatorId = session.user.id;
   const now = new Date();
   const eventId = crypto.randomUUID();
@@ -84,22 +166,43 @@ export async function createSession(
 
   if (spotId) {
     const [existing] = await db
-      .select({ id: spot.id })
+      .select({ id: spot.id, creatorId: spot.creatorId })
       .from(spot)
-      .where(eq(spot.id, spotId))
-      .limit(1);
+      .where(eq(spot.id, spotId));
     if (!existing) {
       return { error: PLACE_ERROR };
     }
+    if (spotPhotoUrls.length > 0 && existing.creatorId !== creatorId) {
+      return { error: PHOTO_SAVE_ERROR };
+    }
+
+    const owned = await ownedCreatePhotos(
+      creatorId,
+      sessionPhotoUrls,
+      spotPhotoUrls,
+    );
+    if (!owned.ok) {
+      return { error: PHOTO_SAVE_ERROR };
+    }
 
     try {
-      await db.insert(event).values({
-        id: eventId,
-        spotId,
-        startsAt,
-        endsAt,
-        creatorId,
-        createdAt: now,
+      await db.transaction(async (tx) => {
+        await tx.insert(event).values({
+          id: eventId,
+          spotId,
+          startsAt,
+          endsAt,
+          creatorId,
+          createdAt: now,
+        });
+        await writeEventPhotos(tx, {
+          eventId,
+          spotId,
+          uploaderId: creatorId,
+          createdAt: now,
+          sessionPhotos: owned.sessionPhotos,
+          spotPhotos: owned.spotPhotos,
+        });
       });
     } catch {
       return { error: SAVE_ERROR };
@@ -113,6 +216,15 @@ export async function createSession(
   }
   if (lat === null || lng === null) {
     return { error: COORDS_ERROR };
+  }
+
+  const owned = await ownedCreatePhotos(
+    creatorId,
+    sessionPhotoUrls,
+    spotPhotoUrls,
+  );
+  if (!owned.ok) {
+    return { error: PHOTO_SAVE_ERROR };
   }
 
   const newSpotId = crypto.randomUUID();
@@ -134,6 +246,14 @@ export async function createSession(
         endsAt,
         creatorId,
         createdAt: now,
+      });
+      await writeEventPhotos(tx, {
+        eventId,
+        spotId: newSpotId,
+        uploaderId: creatorId,
+        createdAt: now,
+        sessionPhotos: owned.sessionPhotos,
+        spotPhotos: owned.spotPhotos,
       });
     });
   } catch {
@@ -265,7 +385,12 @@ export async function deleteSession(
   }
 
   try {
-    await getDb().transaction(async (tx) => {
+    const pathnames = await getDb().transaction(async (tx) => {
+      const sessionRows = await tx
+        .select({ pathname: sessionPhoto.pathname })
+        .from(sessionPhoto)
+        .where(eq(sessionPhoto.eventId, eventId));
+      await tx.delete(sessionPhoto).where(eq(sessionPhoto.eventId, eventId));
       await tx.delete(event).where(
         and(
           eq(event.id, eventId),
@@ -277,15 +402,24 @@ export async function deleteSession(
         .select({ n: count() })
         .from(event)
         .where(eq(event.spotId, row.spotId));
+      const blobPaths = pathnamesOf(sessionRows);
       if (
         Number(remaining?.n ?? 1) === 0 &&
         row.spotCreatorId === session.user.id
       ) {
+        const spotRows = await tx
+          .select({ pathname: spotPhoto.pathname })
+          .from(spotPhoto)
+          .where(eq(spotPhoto.spotId, row.spotId));
+        await tx.delete(spotPhoto).where(eq(spotPhoto.spotId, row.spotId));
         await tx.delete(spot).where(
           and(eq(spot.id, row.spotId), eq(spot.creatorId, session.user.id)),
         );
+        blobPaths.push(...pathnamesOf(spotRows));
       }
+      return blobPaths;
     });
+    await removeBlobs(pathnames);
   } catch {
     return { error: SAVE_ERROR };
   }
