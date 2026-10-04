@@ -4,6 +4,12 @@ export const PHOTO_CONTENT_TYPES = [
   "image/webp",
 ] as const;
 
+export const PHOTO_SAVE_ERROR = "Nie można zapisać zdjęcia.";
+export const PHOTO_TYPE_ERROR = "Dozwolone są tylko pliki JPEG, PNG i WebP.";
+export const PHOTO_SIZE_ERROR = "Plik jest za duży. Maksymalny rozmiar to 8 MB.";
+
+const BLOCKED_EXTENSIONS = new Set(["heic", "heif", "gif", "svg"]);
+
 export type PhotoContentType = (typeof PHOTO_CONTENT_TYPES)[number];
 
 export const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
@@ -20,6 +26,87 @@ export type UploadTokenOptions = {
 export function photoPathPrefix(kind: PhotoKind, userId: string): string {
   const root = kind === "session" ? "session-photos" : "spot-photos";
   return `${root}/${userId}/`;
+}
+
+export function photoExtension(fileName: string): string {
+  const base = fileName.split(/[/\\]/).pop() ?? "";
+  const dot = base.lastIndexOf(".");
+  if (dot < 0 || dot === base.length - 1) {
+    return "";
+  }
+  return base.slice(dot + 1).toLowerCase();
+}
+
+function safePhotoName(fileName: string): string {
+  const base = fileName.split(/[/\\]/).pop() ?? "";
+  const cleaned = base
+    .replace(/[^A-Za-z0-9._-]/g, "")
+    .replace(/\.\.+/g, ".")
+    .replace(/^\.+/, "");
+  if (cleaned.length === 0 || cleaned === "." || cleaned.includes("..")) {
+    return "photo";
+  }
+  return cleaned.slice(0, 80);
+}
+
+export function photoUploadPathname(
+  kind: PhotoKind,
+  userId: string,
+  fileName: string,
+): string {
+  return `${photoPathPrefix(kind, userId)}${safePhotoName(fileName)}`;
+}
+
+export function resolvedPhotoType(file: {
+  type: string;
+  name: string;
+}): PhotoContentType | null {
+  if (BLOCKED_EXTENSIONS.has(photoExtension(file.name))) {
+    return null;
+  }
+  if (isPhotoContentType(file.type)) {
+    return file.type;
+  }
+  if (file.type !== "") {
+    return null;
+  }
+  const ext = photoExtension(file.name);
+  if (ext === "jpg" || ext === "jpeg") {
+    return "image/jpeg";
+  }
+  if (ext === "png") {
+    return "image/png";
+  }
+  if (ext === "webp") {
+    return "image/webp";
+  }
+  return null;
+}
+
+export function photoFileError(file: {
+  type: string;
+  size: number;
+  name: string;
+}): string | null {
+  if (!resolvedPhotoType(file)) {
+    return PHOTO_TYPE_ERROR;
+  }
+  if (!Number.isFinite(file.size) || file.size < 0 || file.size > MAX_PHOTO_BYTES) {
+    return PHOTO_SIZE_ERROR;
+  }
+  return null;
+}
+
+export function photoListError(
+  files: readonly { type: string; size: number; name: string }[],
+): string | null {
+  for (const file of files) {
+    const problem = photoFileError(file);
+    if (problem) {
+      return problem;
+    }
+  }
+  return null;
 }
 
 export function parseUploadKind(clientPayload: string | null): PhotoKind | null {

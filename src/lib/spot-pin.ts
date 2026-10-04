@@ -3,4 +3,5 @@ export type SpotPin = {
   name: string | null;
   lat: number;
   lng: number;
+  creatorId: string;
 };

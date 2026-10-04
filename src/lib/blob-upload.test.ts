@@ -4,9 +4,63 @@ import {
   MAX_PHOTO_BYTES,
   parseUploadKind,
   PHOTO_CONTENT_TYPES,
+  PHOTO_SIZE_ERROR,
+  PHOTO_TYPE_ERROR,
+  photoFileError,
+  photoListError,
+  photoUploadPathname,
 } from "@/lib/blob-upload";
 
 const USER = "user-1";
+
+describe("photoFileError", () => {
+  it("accepts jpeg, png, and webp inside the size limit", () => {
+    expect(photoFileError({ type: "image/jpeg", size: 100, name: "a.jpg" })).toBeNull();
+    expect(photoFileError({ type: "image/png", size: MAX_PHOTO_BYTES, name: "a.png" })).toBeNull();
+    expect(photoFileError({ type: "", size: 10, name: "a.webp" })).toBeNull();
+  });
+
+  it("refuses HEIC, other types, and oversize files", () => {
+    expect(photoFileError({ type: "image/heic", size: 100, name: "a.heic" })).toBe(
+      PHOTO_TYPE_ERROR,
+    );
+    expect(photoFileError({ type: "", size: 100, name: "a.HEIC" })).toBe(
+      PHOTO_TYPE_ERROR,
+    );
+    expect(photoFileError({ type: "image/jpeg", size: 100, name: "a.heic" })).toBe(
+      PHOTO_TYPE_ERROR,
+    );
+    expect(photoFileError({ type: "image/gif", size: 10, name: "a.gif" })).toBe(
+      PHOTO_TYPE_ERROR,
+    );
+    expect(
+      photoFileError({ type: "image/jpeg", size: MAX_PHOTO_BYTES + 1, name: "a.jpg" }),
+    ).toBe(PHOTO_SIZE_ERROR);
+    expect(
+      photoListError([
+        { type: "image/jpeg", size: 10, name: "ok.jpg" },
+        { type: "image/heic", size: 10, name: "no.heic" },
+      ]),
+    ).toBe(PHOTO_TYPE_ERROR);
+  });
+});
+
+describe("photoUploadPathname", () => {
+  it("keeps the file under the caller's kind prefix", () => {
+    expect(photoUploadPathname("session", "user-1", "a.jpg")).toBe(
+      "session-photos/user-1/a.jpg",
+    );
+    expect(photoUploadPathname("spot", "user-1", "my photo.png")).toBe(
+      "spot-photos/user-1/myphoto.png",
+    );
+    expect(photoUploadPathname("session", "user-1", "../secret.jpg")).toBe(
+      "session-photos/user-1/secret.jpg",
+    );
+    expect(photoUploadPathname("session", "user-1", "..\\secret.jpg")).not.toContain(
+      "..",
+    );
+  });
+});
 
 describe("parseUploadKind", () => {
   it("reads session and spot kinds", () => {

@@ -300,26 +300,26 @@ Public pages must not wait on Blob token generation. Image bytes are not optimiz
 
 #### Automated
 
-- [x] 2.1 `npm run test:run` passes, including the structural check that `src/app/sesja/[id]/page.tsx` and `src/app/miejsce/[id]/page.tsx` do not contain `getSession`
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 `npx tsc --noEmit` passes
+- [x] 2.1 `npm run test:run` passes, including the structural check that `src/app/sesja/[id]/page.tsx` and `src/app/miejsce/[id]/page.tsx` do not contain `getSession` — 3833aae
+- [x] 2.2 `npm run lint` passes — 3833aae
+- [x] 2.3 `npx tsc --noEmit` passes — 3833aae
 
 #### Manual
 
-- [x] 2.4 A session with only session photos shows them on `/sesja/[id]` and does not show them on `/miejsce/[id]` until one is featured
-- [x] 2.5 A featured photo and an owner spot photo show on `/miejsce/[id]` and do not appear on a different session at that spot
-- [x] 2.6 A session with no photos has no photo heading and no image
-- [x] 2.7 The place link on the session opens `/miejsce/[id]`
-- [x] 2.8 `/` still shows time and place and no image
+- [x] 2.4 A session with only session photos shows them on `/sesja/[id]` and does not show them on `/miejsce/[id]` until one is featured — 3833aae
+- [x] 2.5 A featured photo and an owner spot photo show on `/miejsce/[id]` and do not appear on a different session at that spot — 3833aae
+- [x] 2.6 A session with no photos has no photo heading and no image — 3833aae
+- [x] 2.7 The place link on the session opens `/miejsce/[id]` — 3833aae
+- [x] 2.8 `/` still shows time and place and no image — 3833aae
 
 ### Phase 3: Add and manage
 
 #### Automated
 
-- [ ] 3.1 `npm run test:run` passes
-- [ ] 3.2 `npm run lint` passes
-- [ ] 3.3 `npx tsc --noEmit` passes
-- [ ] 3.4 `npm run build` passes with `BLOB_READ_WRITE_TOKEN` unset
+- [x] 3.1 `npm run test:run` passes
+- [x] 3.2 `npm run lint` passes
+- [x] 3.3 `npx tsc --noEmit` passes
+- [x] 3.4 `npm run build` passes with `BLOB_READ_WRITE_TOKEN` unset
 
 #### Manual
 

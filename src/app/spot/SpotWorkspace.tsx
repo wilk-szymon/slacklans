@@ -8,9 +8,11 @@ import { SpotForm } from "./SpotForm";
 export function SpotWorkspace({
   spots,
   maptilerKey,
+  currentUserId,
 }: {
   spots: SpotPin[];
   maptilerKey: string;
+  currentUserId: string;
 }) {
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [newLatLng, setNewLatLng] = useState<{
@@ -38,6 +40,7 @@ export function SpotWorkspace({
         spots={spots}
         selectedSpotId={selectedSpotId}
         newLatLng={newLatLng}
+        currentUserId={currentUserId}
       />
     </>
   );

@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
-import { loadSpotGallery } from "@/lib/photo-queries";
 import { spot } from "@/lib/schema/spots";
+import { SpotPhotos } from "./SpotPhotos";
 
 const loadPublicSpot = cache(async (id: string) => {
   const [row] = await getDb()
@@ -12,6 +12,7 @@ const loadPublicSpot = cache(async (id: string) => {
       name: spot.name,
       lat: spot.lat,
       lng: spot.lng,
+      creatorId: spot.creatorId,
     })
     .from(spot)
     .where(eq(spot.id, id))
@@ -46,7 +47,6 @@ export default async function MiejscePage({
 
   const place = row.name ?? `${row.lat.toFixed(5)}, ${row.lng.toFixed(5)}`;
   const mapHref = `https://www.openstreetmap.org/?mlat=${row.lat}&mlon=${row.lng}#map=17/${row.lat}/${row.lng}`;
-  const photos = await loadSpotGallery(id);
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 py-12">
@@ -59,25 +59,7 @@ export default async function MiejscePage({
       >
         Otwórz na mapie
       </a>
-      {photos.length > 0 ? (
-        <section className="mt-8" aria-labelledby="spot-photos">
-          <h2
-            id="spot-photos"
-            className="text-sm font-medium text-zinc-600 dark:text-zinc-400"
-          >
-            Zdjęcia
-          </h2>
-          <ul className="mt-4 flex flex-col gap-4">
-            {photos.map((photo) => (
-              <li key={photo.id}>
-                {/* Plain img: these photos skip Next image optimization. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photo.blobUrl} alt="Zdjęcie" className="w-full" />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      <SpotPhotos spotId={id} creatorId={row.creatorId} />
     </main>
   );
 }

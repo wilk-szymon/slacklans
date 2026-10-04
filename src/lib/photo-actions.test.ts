@@ -56,6 +56,9 @@ vi.mock("next/navigation", () => ({
     throw new Error(`NEXT_REDIRECT:${url}`);
   },
 }));
+vi.mock("next/cache", () => ({
+  refresh: vi.fn(),
+}));
 
 import {
   addSessionPhoto,

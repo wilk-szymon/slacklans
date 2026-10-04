@@ -6,7 +6,7 @@ import {
   type PhotoKind,
 } from "@/lib/blob-upload";
 
-export const PHOTO_SAVE_ERROR = "Nie można zapisać zdjęcia.";
+export { PHOTO_SAVE_ERROR } from "@/lib/blob-upload";
 
 export type OwnedPhoto = {
   blobUrl: string;

@@ -1,6 +1,7 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { collectOwnedPhotos, PHOTO_SAVE_ERROR, removeBlobs } from "@/lib/photo-blob";
@@ -11,6 +12,11 @@ import { getSession } from "@/lib/session";
 export type PhotoActionState = {
   error?: string;
 };
+
+function saved(): PhotoActionState {
+  refresh();
+  return {};
+}
 
 async function requireUser(callbackPath: string): Promise<string> {
   const session = await getSession();
@@ -64,7 +70,7 @@ export async function addSessionPhoto(
   } catch {
     return { error: PHOTO_SAVE_ERROR };
   }
-  return {};
+  return saved();
 }
 
 export async function deleteSessionPhoto(
@@ -102,7 +108,7 @@ export async function deleteSessionPhoto(
     return { error: PHOTO_SAVE_ERROR };
   }
   await removeBlobs([pathname]);
-  return {};
+  return saved();
 }
 
 export async function addSpotPhoto(
@@ -146,7 +152,7 @@ export async function addSpotPhoto(
   } catch {
     return { error: PHOTO_SAVE_ERROR };
   }
-  return {};
+  return saved();
 }
 
 export async function deleteSpotPhoto(
@@ -183,7 +189,7 @@ export async function deleteSpotPhoto(
     return { error: PHOTO_SAVE_ERROR };
   }
   await removeBlobs([pathname]);
-  return {};
+  return saved();
 }
 
 async function setFeatured(
@@ -220,7 +226,7 @@ async function setFeatured(
   } catch {
     return { error: PHOTO_SAVE_ERROR };
   }
-  return {};
+  return saved();
 }
 
 export async function featureSessionPhoto(
@@ -233,4 +239,22 @@ export async function unfeatureSessionPhoto(
   photoId: string,
 ): Promise<PhotoActionState> {
   return setFeatured(photoId, false);
+}
+
+export async function deleteSessionPhotoFromForm(photoId: string): Promise<void> {
+  await deleteSessionPhoto(photoId);
+}
+
+export async function deleteSpotPhotoFromForm(photoId: string): Promise<void> {
+  await deleteSpotPhoto(photoId);
+}
+
+export async function featureSessionPhotoFromForm(photoId: string): Promise<void> {
+  await featureSessionPhoto(photoId);
+}
+
+export async function unfeatureSessionPhotoFromForm(
+  photoId: string,
+): Promise<void> {
+  await unfeatureSessionPhoto(photoId);
 }

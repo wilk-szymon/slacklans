@@ -21,6 +21,7 @@ export default async function SpotPage() {
       name: spot.name,
       lat: spot.lat,
       lng: spot.lng,
+      creatorId: spot.creatorId,
     })
     .from(spot);
 
@@ -28,7 +29,11 @@ export default async function SpotPage() {
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 py-12">
       <h1 className="text-2xl font-semibold tracking-tight">Nowa sesja</h1>
       <div className="mt-8">
-        <SpotWorkspace spots={spots} maptilerKey={maptilerKey} />
+        <SpotWorkspace
+          spots={spots}
+          maptilerKey={maptilerKey}
+          currentUserId={session.user.id}
+        />
       </div>
     </main>
   );
