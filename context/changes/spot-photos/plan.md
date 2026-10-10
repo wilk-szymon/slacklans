@@ -316,10 +316,10 @@ Public pages must not wait on Blob token generation. Image bytes are not optimiz
 
 #### Automated
 
-- [x] 3.1 `npm run test:run` passes
-- [x] 3.2 `npm run lint` passes
-- [x] 3.3 `npx tsc --noEmit` passes
-- [x] 3.4 `npm run build` passes with `BLOB_READ_WRITE_TOKEN` unset
+- [x] 3.1 `npm run test:run` passes — 480d948
+- [x] 3.2 `npm run lint` passes — 480d948
+- [x] 3.3 `npx tsc --noEmit` passes — 480d948
+- [x] 3.4 `npm run build` passes with `BLOB_READ_WRITE_TOKEN` unset — 480d948
 
 #### Manual
 
