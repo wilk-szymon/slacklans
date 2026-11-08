@@ -6,7 +6,7 @@ import {
   text,
   timestamp,
   uniqueIndex,
-}from "drizzle-orm/pg-core";
+} from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
 export const spot = pgTable("spot", {
