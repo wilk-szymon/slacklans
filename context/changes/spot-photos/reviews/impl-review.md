@@ -45,7 +45,7 @@
   - Tradeoff: Racy under double-submit, and needs a check in three places.
   - Confidence: MED — covers the UI paths, not concurrent calls.
   - Blind spot: Concurrent tabs.
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED (Fix A) — delegated in wilk-szymon/slacklans#2
 
 ### F2 — `deleteSession` can delete photos and keep the event
 
@@ -55,7 +55,7 @@
 - **Location**: src/lib/spot-actions.ts:388-422
 - **Detail**: `tx.delete(sessionPhoto).where(eq(sessionPhoto.eventId, eventId))` runs with no gate. The guarded event delete (`creatorId` and `endsAt > now`) can then match 0 rows if the session ends or is edited between the pre-check and the transaction. The transaction still commits. Every session photo, other users' included, and its blob is permanently gone, the event stays, and the user is redirected to `/moje` as if it worked.
 - **Fix**: Add `.returning({ id: event.id })` to the event delete and throw inside the transaction when it is empty, so the photo delete rolls back. Return `SAVE_ERROR`, and add a test for the 0-row case.
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED — delegated in wilk-szymon/slacklans#2
 
 ### F3 — Publish form re-uploads every file after a server-side validation error
 
@@ -69,7 +69,7 @@
   - Tradeoff: Small amount of client state; the cache must be cleared when the file inputs change.
   - Confidence: HIGH — the form is client-only and the URLs stay valid.
   - Blind spot: Not measured how often users hit server-side errors.
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED — delegated in wilk-szymon/slacklans#4
 
 ### F4 — Partial multi-file failure leaves the picker dirty and re-attaches files
 
@@ -79,7 +79,7 @@
 - **Location**: src/app/sesja/[id]/SessionPhotoUpload.tsx:38-55, src/app/miejsce/[id]/SpotPhotoUpload.tsx:38-55
 - **Detail**: When file k fails, files 1..k-1 are already attached, but `input.value = ""` runs only on full success. Re-picking the same selection either does not fire `change`, or attaches files 1..k-1 a second time (see F1).
 - **Fix**: Clear the input in `finally`. F1's unique index then makes any repeat attach fail cleanly.
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED — delegated in wilk-szymon/slacklans#4
 
 ### F5 — README rewritten outside plan scope and already stale
 
@@ -89,7 +89,7 @@
 - **Location**: README.md (rewritten in c8c5664)
 - **Detail**: The plan asked only for a `.env.example` entry, which is done. The README rewrite has no `BLOB_READ_WRITE_TOKEN` row in its env table, no `/miejsce/[id]` route, no photo features, and no `session_photo`/`spot_photo` tables.
 - **Fix**: Add the token row, the `/miejsce/[id]` route, and the two tables to README.md.
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED — delegated in wilk-szymon/slacklans#5
 
 ### F6 — Upload pathname is validated, not server-chosen; "this store" is implicit
 
@@ -99,7 +99,7 @@
 - **Location**: src/lib/blob-upload.ts:163-185, src/lib/photo-blob.ts:20-47
 - **Detail**: The plan says the pathname "is chosen on the server side of token generation". In `@vercel/blob` 2.8 the client sends the pathname and the SDK signs it (`client.js:252-283`), so `authorizeUpload` instead refuses any pathname outside `<kind>-photos/<userId>/`. Store membership has no hostname check; it relies on `head()` using this store's token, and the code stores `meta.url`, never the client string. Security is equivalent.
 - **Fix**: Accept as documented drift; no code change.
-- **Decision**: PENDING
+- **Decision**: ACCEPTED — the SDK signs the client pathname; prefix validation plus storing head().url gives equivalent security
 
 ### F7 — No-op `onUploadCompleted` registers a webhook per upload
 
@@ -109,7 +109,7 @@
 - **Location**: src/app/api/blob/upload/route.ts:29-31
 - **Detail**: Because the callback is defined, `handleUpload` sets a `callbackUrl`, so Vercel POSTs a signed webhook to this route after every upload. The route does nothing with it.
 - **Fix**: Drop the `onUploadCompleted` option (optional in 2.8 types). That still meets the plan's "does not insert a row".
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED — delegated in wilk-szymon/slacklans#3
 
 ### F8 — Upload components are near-duplicates
 
@@ -119,7 +119,7 @@
 - **Location**: src/app/sesja/[id]/SessionPhotoUpload.tsx, src/app/miejsce/[id]/SpotPhotoUpload.tsx
 - **Detail**: The two files differ in 6 lines: the action import, the prop name, the kind, the action call, the label, and the input id. Any fix to one (F4) has to be copied into the other.
 - **Fix**: Extract one `PhotoUploadField({ inputId, label, kind, attach })` client component under `src/components/`.
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED — delegated in wilk-szymon/slacklans#4
 
 ### F9 — Action argument hygiene and login return path
 
@@ -129,7 +129,7 @@
 - **Location**: src/lib/photo-actions.ts:35,79-80,118,161-162,199-200
 - **Detail**: Exported server actions call `.trim()` on their arguments, which can be arbitrary. A non-string throws a TypeError before `requireUser`, or right after it in the delete and feature actions. The delete and feature actions also send a logged-out user to login with `callbackUrl=/` instead of the page they were on.
 - **Fix**: Guard with `typeof x === "string"` like `fieldString` in spot-actions.ts.
-- **Decision**: PENDING
+- **Decision**: FIX QUEUED — delegated in wilk-szymon/slacklans#3
 
 ### F10 — Serial `head()` and no FK indexes
 
@@ -139,4 +139,4 @@
 - **Location**: src/lib/photo-blob.ts:49-63, src/lib/spot-actions.ts:84-114, drizzle/0003_session_spot_photos.sql
 - **Detail**: `collectOwnedPhotos` awaits `head()` once per URL in sequence, and `writeEventPhotos` inserts one row at a time. There is no index on `session_photo.event_id` or `spot_photo.spot_id`; Postgres does not index FKs automatically. This is fine at Gdynia volume.
 - **Fix**: If F1 adds a migration, fold the two FK indexes into it. Optionally use `Promise.all` for the `head()` calls.
-- **Decision**: PENDING
+- **Decision**: PARTIAL — FK indexes folded into the F1 migration (wilk-szymon/slacklans#2); serial head() accepted at Gdynia volume
