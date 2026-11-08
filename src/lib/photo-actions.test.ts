@@ -60,6 +60,7 @@ vi.mock("next/cache", () => ({
   refresh: vi.fn(),
 }));
 
+import { PHOTO_SAVE_ERROR } from "@/lib/photo-blob";
 import {
   addSessionPhoto,
   addSpotPhoto,
@@ -129,6 +130,48 @@ describe("photo actions", () => {
     expect(getDb).not.toHaveBeenCalled();
     expect(blobHead).not.toHaveBeenCalled();
     expect(blobDel).not.toHaveBeenCalled();
+  });
+
+  it("returns the save error and writes nothing for non-string arguments", async () => {
+    const bad = [undefined, null, 42, {}, ["a"]] as unknown as string[];
+    for (const value of bad) {
+      const results = await Promise.all([
+        addSessionPhoto(value, SESSION_URL),
+        addSessionPhoto(EVENT_ID, value),
+        addSpotPhoto(value, SPOT_URL),
+        addSpotPhoto(SPOT_ID, value),
+        deleteSessionPhoto(value),
+        deleteSpotPhoto(value),
+        featureSessionPhoto(value),
+        unfeatureSessionPhoto(value),
+      ]);
+      for (const result of results) {
+        expect(result).toEqual({ error: PHOTO_SAVE_ERROR });
+      }
+    }
+    expect(getDb).not.toHaveBeenCalled();
+    expect(insert).not.toHaveBeenCalled();
+    expect(blobHead).not.toHaveBeenCalled();
+    expect(blobDel).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["deleteSessionPhoto", (p: string) => deleteSessionPhoto("photo-1", p)],
+    ["deleteSpotPhoto", (p: string) => deleteSpotPhoto("photo-2", p)],
+    ["featureSessionPhoto", (p: string) => featureSessionPhoto("photo-3", p)],
+    ["unfeatureSessionPhoto", (p: string) => unfeatureSessionPhoto("photo-4", p)],
+  ])("%s sends a logged-out user back to the page path", async (_n, run) => {
+    getSession.mockResolvedValue(null);
+    await expect(run(`/sesja/${EVENT_ID}`)).rejects.toThrow(
+      `NEXT_REDIRECT:/logowanie?callbackUrl=${encodeURIComponent(`/sesja/${EVENT_ID}`)}`,
+    );
+    await expect(run("//evil.example")).rejects.toThrow(
+      `NEXT_REDIRECT:/logowanie?callbackUrl=${encodeURIComponent("/")}`,
+    );
+    await expect(run(undefined as unknown as string)).rejects.toThrow(
+      `NEXT_REDIRECT:/logowanie?callbackUrl=${encodeURIComponent("/")}`,
+    );
+    expect(getDb).not.toHaveBeenCalled();
   });
 
   it("writes nothing when head() fails", async () => {

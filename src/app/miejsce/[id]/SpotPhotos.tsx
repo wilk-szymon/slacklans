@@ -49,14 +49,26 @@ export async function SpotPhotos({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={photo.blobUrl} alt="Zdjęcie" className="w-full" />
                 {isOwner && photo.kind === "spot" ? (
-                  <form action={deleteSpotPhotoFromForm.bind(null, photo.id)}>
+                  <form
+                    action={deleteSpotPhotoFromForm.bind(
+                      null,
+                      `/miejsce/${spotId}`,
+                      photo.id,
+                    )}
+                  >
                     <button type="submit" className={buttonClassName}>
                       Usuń zdjęcie
                     </button>
                   </form>
                 ) : null}
                 {isOwner && photo.kind === "session" ? (
-                  <form action={unfeatureSessionPhotoFromForm.bind(null, photo.id)}>
+                  <form
+                    action={unfeatureSessionPhotoFromForm.bind(
+                      null,
+                      `/miejsce/${spotId}`,
+                      photo.id,
+                    )}
+                  >
                     <button type="submit" className={buttonClassName}>
                       Usuń ze strony miejsca
                     </button>
@@ -84,7 +96,13 @@ export async function SpotPhotos({
                 {/* Plain img: these photos skip Next image optimization. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={photo.blobUrl} alt="Zdjęcie" className="w-full" />
-                <form action={featureSessionPhotoFromForm.bind(null, photo.id)}>
+                <form
+                  action={featureSessionPhotoFromForm.bind(
+                    null,
+                    `/miejsce/${spotId}`,
+                    photo.id,
+                  )}
+                >
                   <button type="submit" className={buttonClassName}>
                     Pokaż na stronie miejsca
                   </button>

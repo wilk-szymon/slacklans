@@ -34,7 +34,13 @@ export async function SessionPhotos({ eventId }: { eventId: string }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={photo.blobUrl} alt="Zdjęcie" className="w-full" />
                 {userId && photo.uploaderId === userId ? (
-                  <form action={deleteSessionPhotoFromForm.bind(null, photo.id)}>
+                  <form
+                    action={deleteSessionPhotoFromForm.bind(
+                      null,
+                      `/sesja/${eventId}`,
+                      photo.id,
+                    )}
+                  >
                     <button type="submit" className={buttonClassName}>
                       Usuń zdjęcie
                     </button>
