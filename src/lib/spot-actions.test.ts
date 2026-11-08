@@ -12,6 +12,7 @@ const {
   countWhere,
   blobHead,
   blobDel,
+  returning,
 } = vi.hoisted(() => {
   const insert = vi.fn();
   const limit = vi.fn();
@@ -27,7 +28,10 @@ const {
     where: vi.fn(() => Promise.resolve()),
   }));
   const update = vi.fn(() => ({ set }));
-  const deleteWhere = vi.fn(() => Promise.resolve());
+  const returning = vi.fn();
+  const deleteWhere = vi.fn(() =>
+    Object.assign(Promise.resolve(), { returning }),
+  );
   const del = vi.fn<(table: unknown) => { where: typeof deleteWhere }>();
   del.mockReturnValue({ where: deleteWhere });
   const transaction = vi.fn();
@@ -42,6 +46,7 @@ const {
     countWhere,
     blobHead: vi.fn(),
     blobDel: vi.fn(),
+    returning,
     getDb: vi.fn(() => ({
       insert,
       transaction,
@@ -251,6 +256,48 @@ describe("createSession photos", () => {
   });
 });
 
+describe("createSession duplicate urls", () => {
+  beforeEach(() => {
+    getSession.mockReset();
+    getDb.mockClear();
+    insert.mockReset();
+    transaction.mockReset();
+    countWhere.mockReset();
+    blobHead.mockReset();
+    getSession.mockResolvedValue(USER);
+  });
+
+  it("verifies and inserts a repeated url once", async () => {
+    countWhere.mockResolvedValue([{ id: SPOT_ID, creatorId: "user-1" }]);
+    blobHead.mockImplementation(async (url: string) =>
+      url === SPOT_BLOB
+        ? headResult("spot-photos/user-1/b.png", "image/png")
+        : headResult("session-photos/user-1/a.jpg", "image/jpeg"),
+    );
+    const values = vi.fn(async () => undefined);
+    insert.mockReturnValue({ values });
+    transaction.mockImplementation(
+      async (fn: (tx: { insert: typeof insert }) => Promise<void>) => {
+        await fn({ insert });
+      },
+    );
+    const data = sessionForm({ spotId: SPOT_ID });
+    data.append("sessionPhotoUrl", SESSION_BLOB);
+    data.append("sessionPhotoUrl", SESSION_BLOB);
+    data.append("spotPhotoUrl", SPOT_BLOB);
+    data.append("spotPhotoUrl", SPOT_BLOB);
+
+    await expect(createSession({}, data)).rejects.toThrow(/NEXT_REDIRECT/);
+
+    expect(blobHead).toHaveBeenCalledTimes(2);
+    expect(insert.mock.calls.map((call) => call[0])).toEqual([
+      event,
+      sessionPhoto,
+      spotPhoto,
+    ]);
+  });
+});
+
 describe("updateSession write gate", () => {
   beforeEach(() => {
     getSession.mockReset();
@@ -312,6 +359,8 @@ describe("deleteSession write gate", () => {
     countWhere.mockReset();
     blobDel.mockReset();
     transaction.mockReset();
+    returning.mockReset();
+    returning.mockResolvedValue([{ id: EVENT_ID }]);
     transaction.mockImplementation(async (fn: (tx: unknown) => Promise<void>) =>
       fn({ delete: del, select: getDb().select }),
     );
@@ -433,5 +482,21 @@ describe("deleteSession write gate", () => {
       "NEXT_REDIRECT:/moje",
     );
     expect(del.mock.calls.map((call) => call[0])).toEqual([sessionPhoto, event]);
+  });
+
+  it("rolls back and reports an error when the gated event delete matches no row", async () => {
+    getSession.mockResolvedValue(USER);
+    limit.mockResolvedValue([editableRow()]);
+    countWhere
+      .mockResolvedValueOnce([{ pathname: "session-photos/user-2/a.jpg" }])
+      .mockResolvedValueOnce([{ n: 1 }]);
+    returning.mockResolvedValue([]);
+
+    const result = await deleteSession({}, editForm());
+
+    expect(result.error).toBeDefined();
+    expect(transaction).toHaveBeenCalledTimes(1);
+    await expect(transaction.mock.results[0]?.value).rejects.toThrow();
+    expect(blobDel).not.toHaveBeenCalled();
   });
 });
