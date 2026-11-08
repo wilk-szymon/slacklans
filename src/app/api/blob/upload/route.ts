@@ -35,9 +35,6 @@ export async function POST(request: Request) {
         }
         return decision.options;
       },
-      onUploadCompleted: async () => {
-        // The photo row is written by the follow-up server action after head().
-      },
     });
     return NextResponse.json(json);
   } catch {

@@ -86,14 +86,13 @@ describe("POST /api/blob/upload", () => {
           clientPayload: string | null,
           multipart: boolean,
         ) => Promise<Record<string, unknown>>;
-        onUploadCompleted?: () => Promise<void>;
       }) => {
         captured = await options.onBeforeGenerateToken(
           "session-photos/user-1/a.jpg",
           JSON.stringify({ kind: "session" }),
           false,
         );
-        await options.onUploadCompleted?.();
+        captured = { ...captured, hasCallback: "onUploadCompleted" in options };
         return { type: "blob.generate-client-token", clientToken: "client" };
       },
     );
@@ -108,6 +107,7 @@ describe("POST /api/blob/upload", () => {
     });
     expect(JSON.stringify(body)).not.toContain(TOKEN);
     expect(captured).not.toHaveProperty("pathname");
+    expect(captured?.hasCallback).toBe(false);
     expect(captured?.allowedContentTypes).toEqual([
       "image/jpeg",
       "image/png",

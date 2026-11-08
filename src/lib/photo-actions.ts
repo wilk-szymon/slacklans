@@ -18,6 +18,14 @@ function saved(): PhotoActionState {
   return {};
 }
 
+function str(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
 async function requireUser(callbackPath: string): Promise<string> {
   const session = await getSession();
   if (!session) {
@@ -32,9 +40,9 @@ export async function addSessionPhoto(
   eventId: string,
   url: string,
 ): Promise<PhotoActionState> {
-  const id = eventId.trim();
+  const id = str(eventId);
   const userId = await requireUser(id ? `/sesja/${id}` : "/");
-  const photoUrl = url.trim();
+  const photoUrl = str(url);
   if (!id || !photoUrl) {
     return { error: PHOTO_SAVE_ERROR };
   }
@@ -75,9 +83,10 @@ export async function addSessionPhoto(
 
 export async function deleteSessionPhoto(
   photoId: string,
+  pagePath?: string,
 ): Promise<PhotoActionState> {
-  const userId = await requireUser("/");
-  const id = photoId.trim();
+  const userId = await requireUser(safeCallbackPath(pagePath));
+  const id = str(photoId);
   if (!id) {
     return { error: PHOTO_SAVE_ERROR };
   }
@@ -115,9 +124,9 @@ export async function addSpotPhoto(
   spotId: string,
   url: string,
 ): Promise<PhotoActionState> {
-  const id = spotId.trim();
+  const id = str(spotId);
   const userId = await requireUser(id ? `/miejsce/${id}` : "/");
-  const photoUrl = url.trim();
+  const photoUrl = str(url);
   if (!id || !photoUrl) {
     return { error: PHOTO_SAVE_ERROR };
   }
@@ -157,9 +166,10 @@ export async function addSpotPhoto(
 
 export async function deleteSpotPhoto(
   photoId: string,
+  pagePath?: string,
 ): Promise<PhotoActionState> {
-  const userId = await requireUser("/");
-  const id = photoId.trim();
+  const userId = await requireUser(safeCallbackPath(pagePath));
+  const id = str(photoId);
   if (!id) {
     return { error: PHOTO_SAVE_ERROR };
   }
@@ -195,9 +205,10 @@ export async function deleteSpotPhoto(
 async function setFeatured(
   photoId: string,
   featured: boolean,
+  pagePath?: string,
 ): Promise<PhotoActionState> {
-  const userId = await requireUser("/");
-  const id = photoId.trim();
+  const userId = await requireUser(safeCallbackPath(pagePath));
+  const id = str(photoId);
   if (!id) {
     return { error: PHOTO_SAVE_ERROR };
   }
@@ -231,30 +242,42 @@ async function setFeatured(
 
 export async function featureSessionPhoto(
   photoId: string,
+  pagePath?: string,
 ): Promise<PhotoActionState> {
-  return setFeatured(photoId, true);
+  return setFeatured(photoId, true, pagePath);
 }
 
 export async function unfeatureSessionPhoto(
   photoId: string,
+  pagePath?: string,
 ): Promise<PhotoActionState> {
-  return setFeatured(photoId, false);
+  return setFeatured(photoId, false, pagePath);
 }
 
-export async function deleteSessionPhotoFromForm(photoId: string): Promise<void> {
-  await deleteSessionPhoto(photoId);
+export async function deleteSessionPhotoFromForm(
+  pagePath: string,
+  photoId: string,
+): Promise<void> {
+  await deleteSessionPhoto(photoId, pagePath);
 }
 
-export async function deleteSpotPhotoFromForm(photoId: string): Promise<void> {
-  await deleteSpotPhoto(photoId);
+export async function deleteSpotPhotoFromForm(
+  pagePath: string,
+  photoId: string,
+): Promise<void> {
+  await deleteSpotPhoto(photoId, pagePath);
 }
 
-export async function featureSessionPhotoFromForm(photoId: string): Promise<void> {
-  await featureSessionPhoto(photoId);
+export async function featureSessionPhotoFromForm(
+  pagePath: string,
+  photoId: string,
+): Promise<void> {
+  await featureSessionPhoto(photoId, pagePath);
 }
 
 export async function unfeatureSessionPhotoFromForm(
+  pagePath: string,
   photoId: string,
 ): Promise<void> {
-  await unfeatureSessionPhoto(photoId);
+  await unfeatureSessionPhoto(photoId, pagePath);
 }
