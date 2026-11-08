@@ -30,6 +30,7 @@ describe("photo controls", () => {
       "src/app/miejsce/[id]/SpotPhotos.tsx",
       "src/app/miejsce/[id]/SpotPhotoUpload.tsx",
       "src/app/spot/SpotForm.tsx",
+      "src/components/PhotoUploadField.tsx",
       "src/lib/upload-client-photo.ts",
     ];
     for (const file of files) {
