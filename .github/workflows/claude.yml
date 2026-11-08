@@ -2,7 +2,8 @@ name: Claude Code
 
 # Runs Claude Code (anthropics/claude-code-action) when a trusted user mentions
 # @claude in an issue, issue comment, PR review, or PR review comment.
-# Requires the Claude GitHub App on this repo and the ANTHROPIC_API_KEY secret.
+# Requires the Claude GitHub App on this repo and the CLAUDE_CODE_OAUTH_TOKEN
+# secret (create it with `claude setup-token`).
 
 on:
   issue_comment:
@@ -63,7 +64,7 @@ jobs:
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # Gates from AGENTS.md. `next typegen` generates the route types
           # that `tsc` needs on a fresh checkout.
           claude_args: |
