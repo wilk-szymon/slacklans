@@ -13,6 +13,10 @@ import {
   createSession,
   type CreateSessionState,
 } from "@/lib/spot-actions";
+import {
+  finishAfterStartError,
+  photoCacheKey,
+} from "@/lib/photo-upload-helpers";
 import { shownUploadError, uploadClientPhoto } from "@/lib/upload-client-photo";
 
 const initialState: CreateSessionState = {};
@@ -41,6 +45,7 @@ export function SpotForm({
   const sessionInput = useRef<HTMLInputElement>(null);
   const spotInput = useRef<HTMLInputElement>(null);
   const submitLock = useRef(false);
+  const uploadedUrls = useRef(new Map<string, string>());
   const selectedSpot = spots.find((item) => item.id === selectedSpotId) ?? null;
   const hasPlace = Boolean(selectedSpot || newLatLng);
   const canAddSpotPhotos = Boolean(
@@ -48,6 +53,17 @@ export function SpotForm({
   );
   const busy = pending || uploading;
   const error = uploadError ?? state?.error;
+
+  async function cachedUpload(kind: "session" | "spot", file: File) {
+    const key = photoCacheKey(kind, file);
+    const hit = uploadedUrls.current.get(key);
+    if (hit) {
+      return hit;
+    }
+    const url = await uploadClientPhoto(currentUserId, kind, file);
+    uploadedUrls.current.set(key, url);
+    return url;
+  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -66,19 +82,27 @@ export function SpotForm({
       return;
     }
 
+    const data = new FormData(form);
+    const orderProblem = finishAfterStartError(
+      String(data.get("start") ?? ""),
+      String(data.get("finish") ?? ""),
+    );
+    if (orderProblem) {
+      submitLock.current = false;
+      setUploadError(orderProblem);
+      return;
+    }
+
     setUploading(true);
     try {
       const sessionUrls: string[] = [];
       for (const file of sessionFiles) {
-        sessionUrls.push(
-          await uploadClientPhoto(currentUserId, "session", file),
-        );
+        sessionUrls.push(await cachedUpload("session", file));
       }
       const spotUrls: string[] = [];
       for (const file of spotFiles) {
-        spotUrls.push(await uploadClientPhoto(currentUserId, "spot", file));
+        spotUrls.push(await cachedUpload("spot", file));
       }
-      const data = new FormData(form);
       for (const url of sessionUrls) {
         data.append("sessionPhotoUrl", url);
       }
@@ -184,6 +208,7 @@ export function SpotForm({
           accept="image/jpeg,image/png,image/webp"
           multiple
           disabled={busy}
+          onChange={() => uploadedUrls.current.clear()}
           className={inputClassName}
         />
       </div>
@@ -200,6 +225,7 @@ export function SpotForm({
             accept="image/jpeg,image/png,image/webp"
             multiple
             disabled={busy}
+            onChange={() => uploadedUrls.current.clear()}
             className={inputClassName}
           />
         </div>
