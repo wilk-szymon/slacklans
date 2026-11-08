@@ -39,7 +39,7 @@ Run `npm run lint` before finishing. Colocated UI under `src/` uses PascalCase f
 
 ## Commit & Pull Request Guidelines
 
-Only commit: `Initial commit from Create Next App`. Remote is `origin` → `https://github.com/wilk-szymon/slacklans` (branch `main`). No `.github/workflows/`. Use a short imperative subject until a convention is set. No CI gate exists. PRs target `main` on that origin.
+Only commit: `Initial commit from Create Next App`. Remote is `origin` → `https://github.com/wilk-szymon/slacklans` (branch `main`). `.github/workflows/claude.yml` runs Claude Code on `@claude` mentions from trusted users; it is not a CI gate. Use a short imperative subject until a convention is set. No CI gate exists. PRs target `main` on that origin.
 
 ## Security & Configuration
 

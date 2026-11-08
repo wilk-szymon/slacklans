@@ -1,9 +1,9 @@
 ---
 change_id: spot-photos
 title: Spot and session photos
-status: implementing
+status: impl_reviewed
 created: 2026-10-04
-updated: 2026-10-04
+updated: 2026-11-01
 archived_at: null
 ---
 
