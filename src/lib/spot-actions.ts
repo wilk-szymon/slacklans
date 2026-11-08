@@ -40,10 +40,11 @@ function normalizeName(value: FormDataEntryValue | null): string | null {
 }
 
 function urlList(formData: FormData, key: string): string[] {
-  return formData
+  const urls = formData
     .getAll(key)
     .flatMap((value) => (typeof value === "string" ? [value.trim()] : []))
     .filter((value) => value !== "");
+  return [...new Set(urls)];
 }
 
 function pathnamesOf(rows: { pathname?: string }[]): string[] {
@@ -391,13 +392,20 @@ export async function deleteSession(
         .from(sessionPhoto)
         .where(eq(sessionPhoto.eventId, eventId));
       await tx.delete(sessionPhoto).where(eq(sessionPhoto.eventId, eventId));
-      await tx.delete(event).where(
-        and(
-          eq(event.id, eventId),
-          eq(event.creatorId, session.user.id),
-          gt(event.endsAt, now),
-        ),
-      );
+      const deleted = await tx
+        .delete(event)
+        .where(
+          and(
+            eq(event.id, eventId),
+            eq(event.creatorId, session.user.id),
+            gt(event.endsAt, now),
+          ),
+        )
+        .returning({ id: event.id });
+      if (deleted.length === 0) {
+        // Gate no longer holds (session ended or edited): roll back photo deletes.
+        throw new Error("event delete matched no row");
+      }
       const [remaining] = await tx
         .select({ n: count() })
         .from(event)

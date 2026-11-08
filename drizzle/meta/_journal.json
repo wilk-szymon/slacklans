@@ -29,6 +29,13 @@
       "when": 1791105557455,
       "tag": "0003_session_spot_photos",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794138091997,
+      "tag": "0004_photo_integrity",
+      "breakpoints": true
     }
   ]
 }

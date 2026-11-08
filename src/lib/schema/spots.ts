@@ -1,10 +1,12 @@
 import {
   boolean,
   doublePrecision,
+  index,
   pgTable,
   text,
   timestamp,
-} from "drizzle-orm/pg-core";
+  uniqueIndex,
+}from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
 export const spot = pgTable("spot", {
@@ -31,29 +33,43 @@ export const event = pgTable("event", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
 });
 
-export const sessionPhoto = pgTable("session_photo", {
-  id: text("id").primaryKey(),
-  eventId: text("event_id")
-    .notNull()
-    .references(() => event.id, { onDelete: "restrict" }),
-  uploaderId: text("uploader_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "restrict" }),
-  blobUrl: text("blob_url").notNull(),
-  pathname: text("pathname").notNull(),
-  featured: boolean("featured").default(false).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
-});
+export const sessionPhoto = pgTable(
+  "session_photo",
+  {
+    id: text("id").primaryKey(),
+    eventId: text("event_id")
+      .notNull()
+      .references(() => event.id, { onDelete: "restrict" }),
+    uploaderId: text("uploader_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "restrict" }),
+    blobUrl: text("blob_url").notNull(),
+    pathname: text("pathname").notNull(),
+    featured: boolean("featured").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+  },
+  (table) => [
+    uniqueIndex("session_photo_pathname_unique").on(table.pathname),
+    index("session_photo_event_id_idx").on(table.eventId),
+  ],
+);
 
-export const spotPhoto = pgTable("spot_photo", {
-  id: text("id").primaryKey(),
-  spotId: text("spot_id")
-    .notNull()
-    .references(() => spot.id, { onDelete: "restrict" }),
-  uploaderId: text("uploader_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "restrict" }),
-  blobUrl: text("blob_url").notNull(),
-  pathname: text("pathname").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
-});
+export const spotPhoto = pgTable(
+  "spot_photo",
+  {
+    id: text("id").primaryKey(),
+    spotId: text("spot_id")
+      .notNull()
+      .references(() => spot.id, { onDelete: "restrict" }),
+    uploaderId: text("uploader_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "restrict" }),
+    blobUrl: text("blob_url").notNull(),
+    pathname: text("pathname").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+  },
+  (table) => [
+    uniqueIndex("spot_photo_pathname_unique").on(table.pathname),
+    index("spot_photo_spot_id_idx").on(table.spotId),
+  ],
+);
