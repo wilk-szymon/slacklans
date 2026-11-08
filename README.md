@@ -10,6 +10,7 @@ Production: [slacklans.vercel.app](https://slacklans.vercel.app)
 - [Better Auth](https://www.better-auth.com) email and password
 - [Neon](https://neon.tech) Postgres through [Drizzle](https://orm.drizzle.team)
 - [Leaflet](https://leafletjs.com) and react-leaflet, with MapTiler raster tiles
+- [Vercel Blob](https://vercel.com/docs/vercel-blob) (public store) for photos
 - npm, Vitest, Playwright, ESLint
 - Vercel, functions in `fra1` (`vercel.json`)
 
@@ -34,6 +35,7 @@ Open [http://localhost:3000](http://localhost:3000). Fill `.env.local` before `d
 | `BETTER_AUTH_SECRET` | Long random string for auth. |
 | `BETTER_AUTH_URL` | Public origin of this app. Locally `http://localhost:3000`. In production `https://slacklans.vercel.app`. |
 | `NEXT_PUBLIC_MAPTILER_KEY` | MapTiler key for the session map. Optional for the rest of the app. `/spot` shows an error until it is set. Use a protected key and restrict HTTP origins. |
+| `BLOB_READ_WRITE_TOKEN` | Read-write token of a **public** Vercel Blob store. Only `/api/blob/upload` needs it, so public pages and `npm run build` work without it. Without it uploads are refused. Keep it in `.env.local`, never in git. |
 
 ## Scripts
 
@@ -57,13 +59,16 @@ Playwright lives in `e2e/` and is not an npm script. Build first, then run `npx 
 The interface is Polish.
 
 - **Home (`/`)** lists sessions whose end is still in the future. The first card is the soonest start and shows the finish time. Same start time prefers the creator with more finished sessions, then the smaller id. An empty list says there is nothing to join.
-- **Session (`/sesja/[id]`)** is public: start, finish, place name or coordinates, and an OpenStreetMap link. Unknown ids 404.
+- **Session (`/sesja/[id]`)** is public: start, finish, place name or coordinates, an OpenStreetMap link, and the session photos. Unknown ids 404.
+- **Place (`/miejsce/[id]`)** is the public spot page with its photo gallery.
 - **New session (`/spot`)** requires a login. Pick an existing spot or drop a pin, optional name (max 200 characters), and a Warsaw start and finish. Finish must be after start. `/nowe` redirects here.
 - **My sessions (`/moje`)** lists the signed-in user's sessions that have not ended, soonest start first.
 - **Edit (`/sesja/[id]/edytuj`)** lets the creator change start and finish until the session has ended.
 - **Account** is email and password at `/logowanie` and `/rejestracja`. Password minimum is 8 characters. Sessions last 7 days. Sign-in is rate-limited. `/spot` and `/moje` redirect to login when the session cookie is missing (`src/proxy.ts`). The header still renders logged-out links if session lookup throws.
 
-Auth HTTP routes are under `/api/auth/[...all]`.
+Photos: logged-in users add JPEG, PNG or WebP photos, up to 8 MiB, to any session. The spot owner keeps a place gallery and can feature session photos in it. Uploads go from the browser to Vercel Blob, and the database row is written only after a server-side `head()` check.
+
+Auth HTTP routes are under `/api/auth/[...all]`. `/api/blob/upload` issues client-upload tokens to logged-in users only.
 
 ## Layout
 
@@ -71,7 +76,7 @@ Auth HTTP routes are under `/api/auth/[...all]`.
 src/app/            pages and the auth route handler
 src/components/     header and map
 src/lib/            auth, database, home ranking, spot actions, Warsaw time
-src/lib/schema/     Drizzle tables: user, session, account, verification, spot, event
+src/lib/schema/     Drizzle tables: user, session, account, verification, spot, event, session_photo, spot_photo
 src/proxy.ts        cookie gate for /spot and /moje
 drizzle/            SQL migrations
 e2e/                Playwright
