@@ -74,7 +74,7 @@ Auth HTTP routes are under `/api/auth/[...all]`. `/api/blob/upload` issues clien
 
 ```
 src/app/            pages and the auth route handler
-src/components/     header and map
+src/components/     header, map, and photo upload field
 src/lib/            auth, database, home ranking, spot actions, Warsaw time
 src/lib/schema/     Drizzle tables: user, session, account, verification, spot, event, session_photo, spot_photo
 src/proxy.ts        cookie gate for /spot and /moje
